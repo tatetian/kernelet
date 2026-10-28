@@ -24,3 +24,4 @@
 
 - [Contributing a design proposal](design-proposals/README.md)
 - [Design proposal template](design-proposals/template.md)
+- [2026-10-27 Separate user execution and event delivery](design-proposals/2026-10-27-separate-user-execution-and-event-delivery.md)
