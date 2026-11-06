@@ -24,3 +24,4 @@
 
 - [Contributing a design proposal](design-proposals/README.md)
 - [Design proposal template](design-proposals/template.md)
+- [2026-11-06 Benchmarking Sandbox Memory Efficiency and Returning Unused Frame Grants](design-proposals/2026-11-06-sandbox-memory-benchmark-and-returnable-frame-grants.md)
