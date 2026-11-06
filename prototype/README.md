@@ -62,6 +62,21 @@ Each directory has a `README.md` saying what is in it.
 
 ## Building and running
 
+The optional `make vsock` experiment builds a safe socket test kernel and runs
+host-to-tenant and peer-to-peer communication, failure checks, and pipe
+comparisons. Its scope and limitations are documented in
+[`kernels/vsock/README.md`](kernels/vsock/README.md) and the
+[Kernelet Vsock proposal](../book/src/design-proposals/2026-11-06-kernelet-vsock.md).
+It is not part of Accepted Design.
+
+`make vsock-compare VSOCK_LABEL=trial VSOCK_OPT=2` adds a real virtio-vsock
+comparison with physical CPU pinning and MSI-X. It needs host AF_VSOCK,
+`/dev/vhost-vsock`, and three available physical cores in addition to KVM.
+`make vsock-profile VSOCK_LABEL=profile VSOCK_OPT=2` collects separate
+diagnostics. Labels must be unique; run harnesses sequentially. The retained
+methodology, raw data, and replay commands are in
+[`bench/vsock/README.md`](bench/vsock/README.md).
+
 ### What it needs
 
 - **Linux on x86-64 with KVM**, and QEMU's `qemu-system-x86_64`, found on
@@ -202,15 +217,17 @@ space check above), and the `stage-*`, `*-boot` and `check-*` targets.
 
 ## Module parameters
 
-The endovisor takes four, which the tests set through the initramfs's
+The endovisor takes the following parameters, which the tests set through the initramfs's
 `/modules/order`:
 
 | parameter | default | what it does | used by |
 |---|---|---|---|
 | `klet_watch` | 1 | the per-processor watch timer: the kernelet's tick, the delivery of virtual interrupts into kernelet code, and the two-tick bound on a critical section | `make yield` (0 for the control boot) |
 | `klet_mirror` | 1 | vOSTD mirrors its guard depth into Linux's preemption count, so that Linux does not deschedule a carrier in a kernelet critical section | `make sched-coop` (0 for the control boot) |
-| `klet_test_hooks` | 0 | the test hook: a `vm_map` carrying `KLET_PROT_TEST_SLEEP` sleeps in Linux | `make mem-conc` (1) |
+| `klet_test_hooks` | 0 | test-only delayed `vm_map`, bounded channel TX/RX delays, and registered channel-demand inspection | `make mem-conc` and channel tests (1) |
 | `klet_test_sleep_ms` | 20 | how long such a `vm_map` sleeps, in milliseconds | – |
+| `klet_vsock_opt` | 0 | read-only notification policy: 0 reference, 1 suppress reservation wakes, 2 also separate poll and gate blocking commit wakes | channel Make targets select `VSOCK_OPT`, default 2 |
+| `klet_vsock_profile` | 0 | opt-in channel counters and elapsed intervals; not enabled in normal comparisons | `make vsock-profile` (1) |
 
 ## The serial log
 

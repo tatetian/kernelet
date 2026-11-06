@@ -1,0 +1,51 @@
+Adversarial review of the 2026-11-06 Kernelet Vsock proposal
+
+Round 1: three independent reviewers with clean contexts.
+Reports: review-round1-soundness.txt, review-round1-linux.txt,
+         review-round1-evidence.txt.
+Outcome: blocking findings; no reviewer concluded fundamental infeasibility.
+
+Changes made in response:
+- L1: defer EOF/read readiness while a pre-shutdown TX reservation remains;
+  add controlled admitted-write/shutdown and survivor-span/death checks.
+- S1/L2/E1: enforce an independent 64-connection limit and distinguish the
+  8 MiB payload bound from allocator-rounded physical storage.
+- E2: specify a non-coalescing reference copy path and identify optional
+  Linux tiny-payload coalescing copies.
+- E3: trace both Linux virtio/vhost notification directions, implemented
+  carrier waits, and planned remote-CPU readiness/IPI/watch/upcall delivery.
+- E4: add direct-vOSTD API-peer measurements at 4/16/64 KiB, separated from
+  tenant end-to-end numbers and with clear limitations on attribution.
+- E5: add a separate control connection to deterministically enable
+  consumption and verify that it wakes a full-ring writer.
+- E6/E7: document interrupted setup/file-reference semantics and fix typo.
+
+Validation after these changes:
+make -C prototype vsock: PASS, including 27 measurements and new race tests.
+Existing 12-test regression before final channel-only fixes: PASS (280 s).
+Round 2: three new independent reviewers with clean contexts.
+Reports: review-round2-soundness.txt, review-round2-linux.txt,
+         review-round2-evidence.txt.
+Outcome: all three report no remaining blocking objections.
+All prior blocking findings were independently checked against source/evidence.
+No reviewer concluded fundamental infeasibility.
+
+Remaining nonblocking limits:
+- Finite post-reservation delay is scheduler-dependent, not a proof of overlap
+  under arbitrary descheduling; proposal now states this explicitly.
+- Forced eviction of the image holding an unpublished span is not tested.
+- API runs always follow each pipe/klet pair; small differences may include
+  order or host drift and are not attributed to a single mechanism.
+- Task-level readiness, production socket integration, and scalability remain
+  documented follow-up work rather than measured functionality.
+
+Retained complete run: serial.txt; check with
+  python3 prototype/tools/check-vsock.py prototype/bench/vsock/serial.txt
+Replay: PASS (all required markers and 27 measurements).
+make check: PASS. make build: PASS (HTML in book/build).
+Host driver: gcc -static -O2 -Wall -Wextra -Werror ... -lpthread: PASS.
+rustfmt --edition 2021 --check on both new Rust sources: PASS.
+
+Final proposal status: Under review, 2026-11-06.
+Acceptance remains the maintainer's decision. No third review round required.
+

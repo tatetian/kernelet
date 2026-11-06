@@ -304,6 +304,7 @@ void klet_sandbox_gone(struct klet_inst *inst)
 	unsigned long blocks, bytes;
 	unsigned int stacks, busy;
 
+	klet_vsock_gone(inst);
 	klet_spaces_destroy(inst);
 	blocks = klet_heap_destroy(inst, &bytes);
 	stacks = klet_kstack_pool_destroy(inst, &busy);
@@ -1039,6 +1040,7 @@ void klet_kill_carriers(struct klet_inst *inst)
 	struct klet_carrier *c;
 
 	klet_spaces_wake_all(inst);
+	klet_vsock_wake();
 
 	spin_lock(&inst->lock);
 	list_for_each_entry(c, &inst->carriers, link) {
@@ -1876,10 +1878,13 @@ void klet_svc_body(struct klet_svc_args *args)
 		atomic64_inc(&c->inst->service_calls);
 	/* Counted for the tests: a memory service the kernelet called with its
 	 * mirror raised, which the prologue has just lifted. */
-	if (args->op >= KLET_SVC_VM_CREATE && c->excess > 0)
+	if (args->op >= KLET_SVC_VM_CREATE && args->op <= KLET_SVC_VM_WAKE && c->excess > 0)
 		atomic64_inc(&c->inst->mem_stats->lifted);
 
 	switch (args->op) {
+	case KLET_SVC_VSOCK:
+		args->ret = klet_vsock_service(c->inst, (void *)args->a0);
+		break;
 	case KLET_SVC_NOP:
 		/*
 		 * With a count, the measurement's second half: what the epilogue
@@ -2245,6 +2250,11 @@ static void klet_svc_stop(u64 code)
 		klet_leave(c, KLET_DEAD);
 }
 
+static s64 klet_svc_vsock(struct klet_vsock_req *req)
+{
+	return (s64)klet_svc_enter(KLET_SVC_VSOCK, (u64)req, 0, 0);
+}
+
 const struct klet_services klet_services = {
 	.abi_version = KLET_ABI_VERSION,
 	.log_write = klet_svc_log_write,
@@ -2271,4 +2281,5 @@ const struct klet_services klet_services = {
 	.fpu_load = klet_svc_fpu_load,
 	.stop = klet_svc_stop,
 	.console_write = klet_svc_console_write,
+	.vsock = klet_svc_vsock,
 };

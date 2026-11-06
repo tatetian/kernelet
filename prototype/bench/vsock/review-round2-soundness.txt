@@ -1,0 +1,136 @@
+Round 2 independent adversarial review: Rust soundness, FFI ownership,
+ring publication, storage lifetime, isolation, and forced teardown.
+Date: 2026-11-06
+Branch inspected: design/klet-vsock (working-tree experiment).
+
+Disposition
+===========
+No blocking objections remain in this review's soundness/ownership scope.
+The round-1 payload-bound objection is fixed with an independent connection
+limit, and the concurrent-shutdown publication objection is fixed in both
+the read predicate and readiness predicate. This is a source-review conclusion
+for the deliberately limited experiment, not approval of production socket
+integration or a claim that every teardown interleaving was executed.
+
+Verified fixes
+==============
+1. The bound now counts allocated connections, including connections with
+   only one surviving endpoint. vsock.c:303-304 checks the independent limit
+   under kv_lock before allocation; :319 increments after a complete setup;
+   :137-140 decrements only when the last endpoint releases the allocation.
+   uapi/klet-vsock.h:15 sets that limit to 64. The earlier counterexample of
+   retaining one endpoint per connection can no longer exceed 64 connections.
+   The proposal:196 correctly distinguishes 8 MiB of payload from allocation
+   rounding and metadata. There is no path observed that bypasses this count.
+
+2. Write shutdown rejects new TX reservations at vsock.c:231 while allowing
+   an already admitted producer to commit at :344-360. An empty read now waits
+   while the live, write-shut peer has an unresolved TX reservation (:244-249).
+   Thus shutdown cannot expose terminal EOF before that producer publishes
+   its successful prefix or cancels with a zero-byte commit. Poll applies the
+   corresponding tx_lease condition at :527-529. A dying peer deliberately
+   bypasses that wait and yields reset after committed bytes, so a reservation
+   abandoned by a killed image does not hold its surviving reader forever.
+
+3. The new host reservation regression establishes an unpublished reservation
+   by waiting until POLLOUT disappears while the writer is still active
+   (run-vsock.c:415-422). The shutdown case pauses that producer, shuts down
+   writes, rejects early readiness, checks all 4096 successful bytes, and then
+   requires EOF (:427-440). Tenant role 6 additionally requires EOF only after
+   its complete input (tenant.S:90-112), so an early EOF causes test failure.
+   The death case actually finishes peer destruction before joining the
+   delayed producer (:423-435); it checks retention of the surviving endpoint's
+   span. Recorded results contain both success markers and matching source
+   fingerprints. I did not run these tests afresh.
+
+Independent ownership/publication analysis
+=========================================
+- Safe callers cannot fabricate handles or extract spans. Socket/RingBuffer
+  fields and Request fields are private (vsock.rs:34-42, :64-66, :152-155).
+  Socket and RingBuffer are !Sync (:68, :157); the data API exclusively borrows
+  RingBuffer and returns only byte counts (:188-232). Neither a span nor the
+  temporary VmReader/VmWriter escapes. Swapping buffers between Socket values
+  merely swaps unique endpoint ownership; no safe duplication was found.
+
+- The C and Rust requests have matching field order and fixed-width fields
+  (vsock.rs:31-42; uapi/klet-vsock.h:27-35), and both service tables use ABI 7.
+  The service pointer is unsafe; safe callers use call's private stack request
+  and owner-scoped lookup (vsock.c:87-95, :392-412). The request remains live
+  while a service sleeps. The host ioctl accepts only control operations and
+  returns no reservation addresses (:458-467).
+
+- Under kv_lock each directional ring grants at most one TX and one RX lease
+  (:228-255). TX reserves free bytes after tail; RX reserves committed bytes
+  after head. RX leaves head unchanged during its copy, preventing reuse of
+  those bytes. TX leaves tail unchanged during its copy, preventing exposure
+  of unpublished bytes. The wrapping u64 difference remains bounded by the
+  power-of-two capacity; neither a physical wrap nor counter wrap invalidates
+  the interval argument. Commits validate the prefix against the active lease
+  (:349-359). Zero-prefix fault commits release a nonempty lease without
+  changing positions (vsock.rs:197-205, :223-231).
+
+- Payload copying finishes before the publishing service's mutex unlock.
+  Peer reservation acquires that mutex before inspecting the positions and
+  then copying. This supplies visibility ordering without making indexes
+  directly writable by safe image code. Both FFI calls and the existing opaque
+  copy routine are compiler-visible memory effects. No independent payload
+  staging allocation or transport forwarding copy was found on these paths.
+
+- Endpoint lifetime pins storage during the temporary unsafe kernel-range
+  reader/writer construction (vsock.rs:193-196, :218-222). A normal peer close
+  only detaches that peer; kv_drop retains both rings while the other endpoint
+  exists (vsock.c:126-147). Host file-operation references prevent local release
+  during kv_io's unlocked copy (:470-499, :540-545). Safe exclusive borrowing
+  prevents local Socket::drop during a Rust operation. Even peer destruction
+  cannot invalidate the surviving endpoint's active span.
+
+- Forced teardown first marks dying and wakes waiters (sandbox.c:547-558,
+  carrier.c:1040-1044). klet_check_exited_locked requires zero carriers before
+  the exit claim (sandbox.c:510-515). Carrier lifetime bookkeeping uncounts
+  them only when image execution can no longer resume (carrier.c:323-363).
+  Only then does klet_sandbox_gone reap endpoints, before reclaiming the image
+  heap (carrier.c:302-311). The two-pass pending-endpoint removal in
+  vsock.c:156-170 avoids stale listener pointers during the owner sweep.
+  A survivor retains independent connection ownership, drains committed bytes,
+  and gets reset without waiting on a dead producer's unpublished lease.
+
+- The new service uses the existing host-stack prologue/epilogue and fatal
+  signal path (carrier.c:1858-1887, :1988-1991). No broker mutex spans execution
+  in the image. call checks the existing sleeping rule before every service,
+  including Drop (vsock.rs:50-55, :140-143). Misuse with a spin guard or virtual
+  interrupts disabled terminates the sandbox through the existing panic
+  contract; it does not silently perform an unchecked sleeping operation.
+
+Nonblocking observations and validation limits
+=============================================
+- The experiment still does not deterministically kill a producer while its
+  own image is copying into a reserved span. The new destruction regression
+  kills the opposite endpoint while a host producer holds the span. The
+  stronger abandonment case remains justified by carrier lifetime and the
+  dead-peer read predicate, and is explicitly listed as follow-up in the
+  proposal's TODOs. The current wording distinguishes the two cases explicitly.
+
+- Same-endpoint read/write concurrency for kernelet tasks, task-level readiness,
+  peer queries, permission revocation, and per-owner byte quotas are deferred
+  explicitly. Exclusive &mut access and whole-carrier waiting constrain the
+  current useful scheduling model. No production feature outside the requested
+  experiment is needed to resolve the reviewed storage-safety question.
+
+- All 13 source SHA-256 values in results.txt match the current files. An
+  initial check against results.txt itself failed on missing "INIT: done";
+  that file contains selected serial-log lines rather than full checker input.
+  The full log was then retained at prototype/bench/vsock/serial.txt, and both
+  results.txt and the proposal now give the exact replay command. I ran
+  python3 prototype/tools/check-vsock.py prototype/bench/vsock/serial.txt;
+  it passes the functional markers, cleanup checks, and 27 measurements, with
+  summary values matching the proposal. This is a fresh log replay, not a new
+  integrated execution. The evidence-replay concern is resolved.
+
+Validation performed
+====================
+Read AGENTS.md and the requested task; independently inspected current Rust,
+broker/UAPI, ABI/carrier/sandbox, tenant/runtime test, proposal, and recorded
+evidence sources. Compared the earlier findings with the actual fixes.
+Performed read-only source-fingerprint comparisons and the checker invocation
+described above. No QEMU execution, build, or implementation edit occurred.
+Only this review report was added.

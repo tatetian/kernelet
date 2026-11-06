@@ -3,7 +3,7 @@
 
 [workspace]
 resolver = "2"
-members = ["libs/align_ext", "libs/ostd-macros", "vostd", "kernels/hello", "kernels/probe", "kernels/yield", "kernels/sched", "kernels/mem", "kernels/pie"]
+members = ["libs/align_ext", "libs/ostd-macros", "vostd", "kernels/hello", "kernels/probe", "kernels/yield", "kernels/sched", "kernels/mem", "kernels/pie", "kernels/vsock"]
 
 # The one lint setting of the Asterinas workspace the kernels need: OSTD's
 # `#[ostd::main]` expands to code under `cfg(ktest)`, Asterinas's test

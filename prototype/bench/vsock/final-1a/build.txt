@@ -1,0 +1,53 @@
+make module DIR=linux/endovisor
+make[1]: Entering directory '/root/Workspace/kernelet/prototype'
+make -C /root/Workspace/kernelet/prototype/.build/linux-6.12 ARCH=x86_64 -j4 M=/root/Workspace/kernelet/prototype/linux/endovisor modules
+make[2]: Entering directory '/root/Workspace/kernelet/prototype/.build/linux-6.12'
+make[2]: Leaving directory '/root/Workspace/kernelet/prototype/.build/linux-6.12'
+make[1]: Leaving directory '/root/Workspace/kernelet/prototype'
+endovisor.ko built; it carries no kernelet image
+cd /root/Workspace/kernelet/prototype && CARGO_TARGET_DIR=/root/Workspace/kernelet/prototype/.build/cargo RUSTFLAGS="-C relocation-model=pic -C code-model=small -C no-redzone=y -C panic=abort -C force-unwind-tables=no" \
+  OSTD_TASK_STACK_SIZE_IN_PAGES=64 \
+  cargo build --offline --release -p vsocktest \
+    --target x86_64-unknown-none -Zbuild-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem || \
+  { echo "image: the build failed; it is --offline, so if a crate is missing, run make crates (once, with a network)"; exit 1; }
+    Finished `release` profile [optimized] target(s) in 0.05s
+ld -pie --no-dynamic-linker --no-undefined --gc-sections --exclude-libs ALL \
+  --build-id=none -z text -z noexecstack -z max-page-size=0x1000 \
+  -T linux/endovisor/kernelet.lds -u kernelet_entry_table -o /root/Workspace/kernelet/prototype/.build/vsocktest.image \
+  --whole-archive /root/Workspace/kernelet/prototype/.build/cargo/x86_64-unknown-none/release/libvsocktest.a --no-whole-archive
+python3 tools/check-image.py /root/Workspace/kernelet/prototype/.build/vsocktest.image
+image: /root/Workspace/kernelet/prototype/.build/vsocktest.image: ET_DYN, 3 load segments, 392 RELATIVE relocations, 157568 bytes
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/holder host/runtime/holder.c host/runtime/sandbox.c
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/run-test host/runtime/run-test.c
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/yield-rival host/runtime/yield-rival.c
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/uapi-check host/runtime/uapi-check.c host/runtime/sandbox.c
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/run-pie host/runtime/run-pie.c host/runtime/sandbox.c
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/run-sched host/runtime/run-sched.c host/runtime/sandbox.c -lpthread
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/run-mem host/runtime/run-mem.c host/runtime/sandbox.c
+gcc -static -O2 -Wall -Wextra -I linux/endovisor/uapi -o /root/Workspace/kernelet/prototype/.build/run-vsock host/runtime/run-vsock.c host/runtime/sandbox.c -lpthread
+mkdir -p /root/Workspace/kernelet/prototype/.build/stage/modules /root/Workspace/kernelet/prototype/.build/stage/tests
+rm -f /root/Workspace/kernelet/prototype/.build/stage/tests/* /root/Workspace/kernelet/prototype/.build/stage/*.klet /root/Workspace/kernelet/prototype/.build/stage/*.image /root/Workspace/kernelet/prototype/.build/stage/*.console /root/Workspace/kernelet/prototype/.build/stage/*.log
+rm -f /root/Workspace/kernelet/prototype/.build/stage/holder /root/Workspace/kernelet/prototype/.build/stage/yield-rival /root/Workspace/kernelet/prototype/.build/stage/uapi-check
+cp /root/Workspace/kernelet/prototype/linux/endovisor/endovisor.ko /root/Workspace/kernelet/prototype/.build/stage/modules/
+printf 'endovisor.ko klet_test_hooks=1 klet_vsock_profile=0 klet_vsock_opt=1\n' > /root/Workspace/kernelet/prototype/.build/stage/modules/order
+cp /root/Workspace/kernelet/prototype/.build/vsocktest.image /root/Workspace/kernelet/prototype/.build/stage/vsocktest.image
+cp /root/Workspace/kernelet/prototype/.build/holder /root/Workspace/kernelet/prototype/.build/stage/holder
+cp /root/Workspace/kernelet/prototype/.build/run-vsock /root/Workspace/kernelet/prototype/.build/stage/run-vsock
+cp /root/Workspace/kernelet/prototype/.build/run-test /root/Workspace/kernelet/prototype/.build/stage/tests/10-vsock
+chmod +x /root/Workspace/kernelet/prototype/.build/stage/tests/10-vsock
+printf '%s\n' 'run /run-vsock /vsocktest.image compare' > /root/Workspace/kernelet/prototype/.build/stage/tests/10-vsock.cmd
+make -C /root/Workspace/kernelet/prototype/.build/linux-6.12 ARCH=x86_64 usr/gen_init_cpio
+make[1]: Entering directory '/root/Workspace/kernelet/prototype/.build/linux-6.12'
+make[2]: Nothing to be done for 'usr/gen_init_cpio'.
+make[1]: Leaving directory '/root/Workspace/kernelet/prototype/.build/linux-6.12'
+gcc -static -O2 -Wall -Wextra -o /root/Workspace/kernelet/prototype/.build/init host/initramfs/init.c
+mkdir -p /root/Workspace/kernelet/prototype/.build/stage/dev /root/Workspace/kernelet/prototype/.build/stage/proc /root/Workspace/kernelet/prototype/.build/stage/sys /root/Workspace/kernelet/prototype/.build/stage/modules /root/Workspace/kernelet/prototype/.build/stage/tests
+rm -f /root/Workspace/kernelet/prototype/.build/stage/dev/console
+cp /root/Workspace/kernelet/prototype/.build/init /root/Workspace/kernelet/prototype/.build/stage/init
+cd /root/Workspace/kernelet/prototype/.build/stage && { \
+  find . -mindepth 1 -type d -printf 'dir /%P %m 0 0\n'; \
+  echo 'nod /dev/console 0600 0 0 c 5 1'; \
+  find . -type f -printf 'file /%P /root/Workspace/kernelet/prototype/.build/stage/%P %m 0 0\n'; \
+} > /root/Workspace/kernelet/prototype/.build/initramfs.list
+/root/Workspace/kernelet/prototype/.build/linux-6.12/usr/gen_init_cpio /root/Workspace/kernelet/prototype/.build/initramfs.list | gzip -9 > /root/Workspace/kernelet/prototype/.build/initramfs.cpio.gz
+-rw-r--r-- 1 root root 2318371 Nov  6 04:49 /root/Workspace/kernelet/prototype/.build/initramfs.cpio.gz

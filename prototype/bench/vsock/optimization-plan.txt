@@ -1,0 +1,107 @@
+Klet-vsock optimization plan: independent review required before implementation
+Date: 2026-11-06
+Status: proposed; no notification optimization has been implemented.
+
+Task: evaluate real virtio-vsock fairly, identify bottlenecks, review designs
+independently BEFORE implementing them, then update/review the whole proposal.
+
+Measured diagnostic basis
+- profile-before-unpinned.txt is a separate instrumented run, not a performance
+  baseline. Cases isolate klet versus direct-API peers, 4096 timed +64 warmups.
+- In the 64 KiB klet case, 4160 read and write operations each copied 272629760
+  bytes. Aggregate read/write commit intervals were ~40 ms each (~9.6 us/op).
+  Aggregate lookup elapsed time was ~2.19 ms for 16646 lookups (~132 ns/lookup),
+  initial/host-commit mutex acquisition ~1.35 ms; these are elapsed, not CPU.
+- Metadata step intervals on commits were small; commit calls also invoke
+  global wake_all. There were 28898 wait attempts, 28895 actual voluntary
+  switch observations, and 20578 retry-EAGAIN observations across 4160 RTTs.
+- There are 127-ish comparisons per lookup because allocation picks high slots.
+  That scan exists, but measured elapsed cost does not justify changing handle
+  representation before addressing notifications.
+- Normal perf runs disable instrumentation. Real baseline harness is in
+  .build/vsock-comparison-before2, with 8192 RTTs,64 warmups,7 repetitions and
+  rotated pipe/klet/API/virtio order. It is exploratory: IRQ affinity must be
+  explicitly recorded/tuned before the final comparison. No current speedup
+  claim is inferred from it.
+
+Existing semantics to preserve
+- Broker mutex protects metadata only; no lock across image or payload copy.
+- Private owner-validated handles; independent ring storage; all-carriers-gone
+  reaping; host file references; no pointer/Arc into a peer heap.
+- A write admitted before SHUT_WR may publish later. EOF must await TX-lease
+  resolution. Zero-byte commits cancel leases and may unblock operations.
+- Concurrent host operations can wait for lease release even when ring is
+  neither empty nor full. Pure empty/full transition notification is unsafe.
+- Normal blocking operations use kv_wait and generation check under kv_lock.
+- Host poll currently uses the same global queue. A waiter counter that ignores
+  poll subscriptions must NOT suppress poll notification.
+
+Proposed implementation, pending review
+1. Suppress successful RESERVE_TX/RESERVE_RX notifications. They publish no
+   bytes/free space, and worsen readiness by taking a lease. Keep BOTH commits,
+   including zero-prefix cancellation, and all terminal/control notifications.
+2. Add RX/TX blocking-waiter counts per ring, protected by kv_lock. Increment
+   the appropriate count after EAGAIN and before releasing kv_lock to wait;
+   decrement it after reacquiring kv_lock on every return, including EINTR/kill.
+   The active endpoint/file/carrier pins its connection while registered.
+3. Separate static global poll queue from static global blocking queue.
+   poll_wait registers on the poll queue; generation protocol remains on the
+   blocking queue. Both objects have module lifetime.
+4. On every data commit, always notify poll subscribers. Notify the blocking
+   queue and increment its generation only when the affected ring has either
+   producer or consumer waiters. Check both counts: commit clears a lease as
+   well as publishing/consuming bytes. This still broadcasts within kv_wait
+   when needed, so it is not a per-connection queue or scalability claim.
+5. Shutdown, close, connect, accept/backlog release and death retain broad
+   notification of both queues. klet_vsock_wake remains atomic-context safe.
+   The lock/condition/register-before-unlock protocol must remain intact.
+6. Retain read-only per-module modes for controlled ablation: 0 baseline,
+   1 suppress reservation notifications only, 2 both changes. Default mode can
+   become 2 only after independent review and correctness/performance checks.
+   No modifications to copy opacity, per-page RCU, lifetime, privileges,
+   carrier parking, or syscall behavior are proposed.
+
+Validation before selecting a default
+- Existing lifecycle/fault/death/half-close/reservation/survivor suite in all
+  notification modes, not just a throughput check.
+- Add poll/epoll-only waiting, zero-prefix lease cancellation, and same-endpoint
+  concurrent operations waiting on a lease. Confirm terminal wakeups remain.
+- Separate instrumented before/after cases should show fewer pointless wakes
+  and retries. Retain raw data and code/config fingerprints.
+- Uninstrumented matched comparisons: same caller,64KiB directional buffers,
+  4/16/64KiB requested data sizes,8192 RTTs,7 repetitions,rotate all transports;
+  include per-run spread and endpoint versus disjoint outer-host CPU metrics.
+- Freeze allocation/VM configuration across before/after. Isolate reservation
+  suppression from demand-driven commits through mode-1 ablation.
+
+Comparison limitations and controls
+- One actual KVM VM, no nested virtualization. Common caller guest CPU1;
+  klet/pipe/API peer guest CPU0; virtio peer outer-host Linux6.8 with vhost.
+  Same physical data cores (0 and1), housekeeping on2. Versions/topology differ.
+- vhost is a thread of QEMU on this host. CPU accounting MUST exclude its TID
+  from other-QEMU CPU before summing, avoiding double counting.
+- Guest virtio-vsock IRQ/work placement must be recorded; default IRQ CPU0 can
+  add avoidable crossings/competition. Plan to target guest caller CPU1 for
+  virtio device IRQs before the final matched before/after series.
+- Default KVM halt polling is 200000ns and can consume idle CPU. Do not change
+  the host-global parameter. Record it, report outer CPU without subtracting
+  idle, and disclose that it is whole configured VM cost, not transport-only.
+- Credit sizes must be set/read back via AF_VSOCK level (Linux6.12 source uses
+  AF_VSOCK, not SOL_VSOCK), with 64-bit SO_VM_SOCKETS_BUFFER_* values.
+
+Pre-implementation review disposition
+- Independent soundness, Linux and evidence reports give conditional approval
+  to implement/test; no reviewer authorizes a speedup claim or default selection.
+- Implementation will preserve generation-before-condition, full registered
+  waiter interval, both commit paths/classes, zero cancellations, independent
+  poll notification, and atomic unconditional terminal wakeups.
+- Modes 0/1 keep the original shared poll/block queue path. Only mode2 uses the
+  separate poll queue, so mode1 differs in notification policy only. Counters
+  may be maintained in all modes as common measurement scaffolding.
+- Post-implementation inspection and the requested regression cases are gates.
+- Fairness correction: the tiny kernel lacked CONFIG_PCI_MSI and the exploratory
+  runs used legacy IRQ11. Enable PCI_MSI, require PCI-MSI/MSI-X interrupt lines,
+  capture requested/effective affinity, and take all final ablations afresh.
+  Do not infer workqueue CPU placement merely from IRQ affinity.
+- Mode2 versus mode1 identifies split-queue+demand-gating as a package, not each
+  constituent cost separately. No copy/RCU/handle representation change planned.

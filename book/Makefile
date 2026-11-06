@@ -3,7 +3,7 @@
 MDBOOK ?= mdbook
 PYTHON ?= python3
 
-.PHONY: all build check render serve clean
+.PHONY: all build check render vsock-plots serve clean
 
 all: check build
 
@@ -12,6 +12,10 @@ build:
 
 check:
 	$(PYTHON) tools/check.py
+
+# Optional: regenerate checked-in SVGs; normal book builds need no plotting packages.
+vsock-plots:
+	$(PYTHON) tools/plot-vsock.py
 
 render: build
 	tools/render.sh $(PAGE) $(OUT)

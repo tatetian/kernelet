@@ -1,0 +1,181 @@
+Independent final adversarial review: soundness, lifetime, notification,
+Accepted Design alignment, and whole-page argument
+Date: 2026-11-06
+Verdict: NO BLOCKING OBJECTION FOUND for the bounded prototype proposal.
+
+This is an independent final inspection, not production acceptance. I read
+AGENTS.md and the entire 429-line proposal, including motivation, alternatives,
+notification proof, measurements, limitations, TODOs, and decision. I inspected
+the actual Rust/C paths and retained correctness tests, rather than treating
+the preceding approvals as proof. I also read the optimization plan, its three
+pre-implementation design reports, review record, and Linux implementation
+inspection. I did not edit source/docs, build, or run QEMU. Only this report was
+added; replay checks read already completed logs.
+
+Reviewed source SHA-256:
+  prototype/linux/endovisor/vsock.c
+    bdb7567cad8ff746ed914a5f71d3bb7e7300407217c6799d4e1b7f7acc79d449
+  prototype/vostd/src/vsock.rs
+    6bbfe33fd3bf94ed2930eba886edd426edc222c032629fb575bfce2431ad6b34
+  prototype/host/runtime/run-vsock.c
+    b2304163af4eee27ec074c171de33bea3d1eacc100de644ba4a62b6164db942c
+  book/src/design-proposals/2026-11-06-kernelet-vsock.md
+    3a4946bb45d0629747ff664dfae9ff8be5ca14844c6cd033e487a2bd45bb2aa8
+
+Blocking findings
+
+None established. In particular, I found no path in the reviewed safe API
+that duplicates endpoint authority, exposes a reserved slice, allows a local
+close to free an active copy/wait, or lets demand suppression miss the commit
+needed to retry a registered operation. No request to weaken memory opacity,
+RCU, endpoint ownership, or termination ordering is justified by the measured
+performance.
+
+Notification reasoning checked against source
+
+- kv_request snapshots generation before kv_step, both under kv_lock
+  (vsock.c:457-474). A data EAGAIN cannot arise before connection establishment,
+  so kv_data_ring is valid on the demand-registration path. Consumer/producer
+  indexing matches the same helper used by reserve and commit (:105-109,
+  :299-337, :425-440). Control waits do not register ring demand.
+- Registration covers the complete unlock/wait/relock interval. Every wait
+  return reacquires the mutex and removes exactly its saved demand before
+  retry or return (:480-501). Signals and own death cannot bypass this cleanup
+  through an early service-stack discard: the service body reaches the
+  existing termination check only after the broker returns.
+- A commit after the unavailable-condition check cannot precede registration
+  because both need kv_lock. A commit after unlock observes nonzero demand,
+  changes generation, and wakes; the wait macro catches a changed generation
+  even if notification preceded its actual queue insertion. A commit before
+  the check is already reflected in the condition. This supplies the required
+  check/register argument without assuming a task was asleep at wake time.
+- Both producer and consumer demand are checked after lease release
+  (:118-130), on both the image-service success path (:503-504) and host-copy
+  commit path (:642-657). Consequently same-direction contenders are notified
+  even with ample data/space, and COMMIT_TX(0) after SHUT_WR can release an EOF
+  waiter. There is no empty/full or positive-byte heuristic.
+- Reservation suppression only omits operations that do not improve another
+  operation's readiness (:116-117). It does not omit zero-prefix commits.
+  Poll registers before checking metadata (:678-679), and mode-2 commits
+  always notify its separate static queue even with zero blocking demand.
+  Read-only mode selection prevents a live subscription moving between queues.
+- klet_vsock_wake retains unconditional generation advance and relevant queue
+  broadcasts (:96-103), without taking the broker mutex or inspecting mutable
+  endpoints. Shutdown, connection/backlog changes, close, and kill still reach
+  this path. A terminal wake cannot be incorrectly filtered by data demand.
+  Unrelated global wakes can cause retries; they do not invalidate the proof.
+
+Storage, Rust safety, and termination checked against source
+
+- Socket/RingBuffer fields and Request fields are private. Unique endpoint
+  ownership, !Sync, exclusive mutable operations, and nonescaping temporary
+  readers/writers prevent safe handle fabrication, duplication, or retaining
+  a borrowed ring after commit (vsock.rs:31-42, :63-68, :136-160, :163-185,
+  :239-293). Swapping two borrowed buffers merely swaps their unique handles.
+  Host control requests cannot invoke reservation/commit or export ring
+  addresses (vsock.c:596-607).
+- TX reserves free bytes after tail and RX committed bytes after head. Both
+  positions remain unchanged until their respective commits; opposite leases
+  therefore cover disjoint byte intervals. Physical wrap limits each lease
+  to a contiguous prefix. Wrapping counter subtraction remains bounded by
+  capacity; actual counter rollover is not runtime-tested here.
+- Mutex ordering, ordinary service memory effects, and the opaque rep movsb
+  copy preserve publication. The existing per-page RCU read section remains
+  in the tenant-memory copy path (vostd/src/mm/io.rs:93-136); the optimization
+  has not substituted optimizer-visible unsynchronized payload references.
+- Host file references retain the local endpoint while kv_io copies unlocked.
+  Safe Rust borrowing retains its owner during reserve/copy/commit. A peer
+  drop only clears its end pointer; the connection is freed only when neither
+  endpoint remains (vsock.c:205-229). No peer endpoint pointer survives an
+  unlocked copy/wait interval. Counters are not lifetime references.
+- sandbox.c:536-558 marks dying before broad wake/kill. Carrier reaping calls
+  klet_vsock_gone before space and heap destruction (carrier.c:302-313), after
+  no carrier can resume image code. A dead image's outstanding span cannot
+  make a live peer wait forever: dead-peer reads drain committed bytes then
+  reset rather than await its abandoned TX lease (vsock.c:323-330).
+- Live SHUT_WR differs deliberately: new writes fail, admitted writes can
+  publish, and empty-ring EOF waits for that admitted lease (:311-330,
+  :425-440). Source and proposal preserve this distinction.
+- Independent live-connection counting bounds retained survivor allocations,
+  rather than incorrectly deriving a payload bound from endpoint pairs
+  (:384-400, :216-220). The proposal distinguishes payload bytes, allocator
+  rounding, and unvalidated per-cgroup limits.
+
+Whole-page coherence and Accepted Design alignment
+
+The page distinguishes one ring allocation from zero application copies,
+architectural notification possibilities from measured carrier waits, and
+planned task readiness from implemented Linux scheduling. Its virtio account
+explicitly permits batching and accelerated in-kernel doorbells; the claimed
+copy path is a specified non-coalescing copying path, not a universal virtio
+penalty. Real virtio is measured and wins at 4 KiB; larger-transfer claims are
+bounded to the disclosed deployment. Pipe results are treated as a reference,
+not an inviolable upper bound. Endpoint CPU and outer-task CPU are not added.
+The initial experiment and current matched mode-0 baseline remain distinct.
+
+The plan/review record makes the pre-implementation conditions inspectable,
+and actual implementation satisfies the ordering/lifetime conditions above.
+The source module default of 0 and Make experiment default of 2 are intentional,
+explicit, and consistent; I do not consider this a defect. Queue separation
+and demand gating are correctly reported as a package in the mode-2 ablation.
+
+The new allocations deliberately extend the accepted framework with broker
+storage, rather than smuggling shared Arc state into independently reaped
+image heaps. Sleepable-service and all-carriers-gone contracts match Accepted
+Design. Status remains Under review; production integration is not implied.
+
+Nonblocking concrete clarification
+
+At proposal:264-270, when identifying future ABI chapter changes, explicitly
+mention the additional writable request pointer. Accepted Design's
+the-kernelet-abi.md:78 currently says the host writes into image memory only
+through user_run and fpu_save outputs. The experimental vsock service also
+writes addr/len into a private stack Request (vsock.rs:50-55, :211-222;
+vsock.c:334-336, :509-531). This is safe for the reviewed private wrapper and
+does not require a source change, but it is a real extension of the documented
+ABI rule, alongside returning authority over broker storage. Stating it
+explicitly would make the eventual Accepted Design update more precise.
+
+Validation and caveats
+
+Independently ran the read-only current checker against retained
+validation-mode-0.txt, validation-mode-1.txt, and validation-mode-2.txt.
+All exited 0 with lifecycle/failure/reservation/cleanup PASS and 27 benchmark
+records. This is a replay, not fresh execution. I inspected the test source
+for same-endpoint TX/RX contention, zero cancellation, FIN after zero TX,
+poll/level/edge publication, capacity release, interruption, kill, backlog,
+and independent-ring stress (run-vsock.c:480-500, :655-1000).
+
+The documented limitations remain material: finite reservation delays do not
+guarantee overlap under arbitrary descheduling; two independent connections
+with one caller each are not adversarial multicaller ring stress; interrupted
+reader coverage ends with teardown rather than later live communication;
+the producer killed inside its own unpublished image copy is still untested;
+counter rollover is untested; task-level subscriptions, policy revocation,
+socket compatibility, per-sandbox quotas, and scaling remain deferred. None
+of these is silently presented as verified functionality in the whole page.
+They limit acceptance scope, not the checked lock/ownership reasoning.
+
+I did not independently recompute all performance tables in this specialized
+review and do not issue an unconditional performance approval. The page's
+methodology and qualifiers are logically compatible with its bounded claims;
+numerical evidence and final regression completion require their separate
+reviews. No final-regression success is inferred from retained correctness
+logs alone.
+
+Final disposition after clarification, 2026-11-06
+
+Inspected the revised Implementation and integration paragraph. It explicitly
+identifies the mutable vOSTD-owned stack request as an experimental extension
+to the accepted ABI's output-pointer rule and requires documenting that region
+on acceptance. It correctly distinguishes this private trusted request from
+arbitrary kernel-proper pointers. The concrete nonblocking suggestion above
+is resolved. Reviewed revised page SHA-256:
+  f11ff1301ff7f8379d1d0e8c0f9138a189c3d397fee030bd420e3964b21d20ef
+
+Also inspected final-regression.txt: all 12 named regression cases pass, ending
+with "make test: PASS (12 tests, 281 s)". This confirms the retained regression
+outcome; I did not execute that run. The verdict remains NO BLOCKING OBJECTION
+FOUND for the bounded proposal, with the substantive validation and production
+caveats above retained. No source edit, build, or QEMU execution was performed
+for this follow-up.

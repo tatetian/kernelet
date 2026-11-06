@@ -1,0 +1,139 @@
+Round 1 independent adversarial review: experiments, architecture, and writing
+Reviewer scope: tmp-klet-vsock-prompt.md; AGENTS.md; proposal; vsock broker,
+vOSTD API, experiment kernel/tenant, host driver, checker, retained evidence.
+Branch reviewed: design/klet-vsock. No QEMU execution or implementation edits.
+
+Verdict: blocking objections remain (E1-E4). The experiment is real and the
+negative performance result is reported honestly. These objections do not
+require production socket compatibility or implementing task-level readiness.
+
+Checks independently performed
+- Ran python3 prototype/tools/check-vsock.py prototype/.build/serial-vsock.log:
+  PASS, all 18 measurements. Current proposal table and results.txt agree with
+  that log: pipe/klet median MiB/s 334.9/249.5, 1163.8/607.5, 3162.6/1496.7.
+- Read raw unload evidence: zero endpoints, connections, heap blocks, stacks,
+  and carrier records, with clean unload. The log reports 0 kick IPIs; it does
+  not measure the proposed task-level virtual-interrupt notification path.
+- Audited direct payload path through vostd/src/vsock.rs:187-241,
+  vostd/src/mm/io.rs:93-141, and linux/endovisor/vsock.c:215-249,448-475.
+  The source supports zero intermediate transport payload copies. Application
+  copies remain. Publication counters alone are correctly not treated as a
+  dynamic measurement of copy counts.
+- Verified old Channels source with:
+  git -C /root/Workspace/kernelet-book show
+    e817415a511d9ff61a4d8aaa97582d26a80bca64:src/blueprint/design/channels.md
+  The retained ownership-transfer excerpt matches that local primary source.
+  The remote revision URL returned 404, which the evidence honestly records.
+- Checked upstream Linux v6.12 driver/common/vhost sources and Asterinas's
+  cited revision through their raw GitHub primary sources. The Asterinas
+  capability/publication comparison and historical frame-move comparison are
+  substantially accurate; no historical timing is misrepresented as new data.
+
+Blocking findings
+
+E1 [P2, factual resource bound]
+Location: book/src/design-proposals/2026-11-06-kernelet-vsock.md:181;
+          prototype/linux/endovisor/vsock.c:124-138,295-309.
+The claimed 8 MiB global payload bound assumes two live endpoints per
+connection. The design explicitly retains both rings after one endpoint is
+dropped. Therefore 128 endpoint slots may retain up to 128 connections with
+one surviving endpoint each, rather than just 64 connections. This permits up
+to 16 MiB of ring payload, plus metadata. Endpoint limits still give a finite
+bound; they do not give the bound stated in the safety/resource argument.
+Necessary fix: correct the bound and explain the surviving-endpoint case, or
+add a separately enforced live-connection/byte limit if 8 MiB is intended.
+
+E2 [P2, inaccurate scope of the reference copy count]
+Location: proposal:35-61 and cost-table payload row at 75.
+The central correction from an imagined two queue copies to one mandatory
+vhost forwarding copy is valuable, but the specified "ordinary copying
+stream I/O ... without MSG_ZEROCOPY or packet capture" still includes Linux
+v6.12 receive coalescing. virtio_transport_recv_enqueue copies a <=128-byte
+incoming packet into the previous queued skb when its conditions hold, adding
+another payload movement within endpoint storage. Thus the categorical count
+of one transport copy per direction is too broad under the proposal's own
+definition, which distinguishes application copies from other movement.
+Primary source:
+https://github.com/torvalds/linux/blob/v6.12/net/vmw_vsock/virtio_transport_common.c#L1260-L1312
+Necessary fix: explicitly scope the diagrams to a non-coalescing ordinary
+path, identify the optional coalescing copy, and describe one mandatory
+forwarding copy rather than a universal total for all ordinary stream I/O.
+No virtio-vsock benchmark is required to fix this finding.
+
+E3 [P2, required notification/transition explanation is incomplete]
+Location: proposal:63-81 and 159-167.
+The generic virtualization box and cost table identify categories but never
+trace the specified Linux virtio/vhost notification path end to end. The
+reader cannot locate backend work, the host socket wakeup, used-ring signal,
+guest interrupt/callback/worker, or optional vCPU wakeup relative to the
+payload path. The proposed task-level paragraph likewise asserts that a
+running carrier receives a virtual interrupt without explaining the actual
+remote-CPU mechanism: pending bits, reschedule IPI, watch/upcall handling,
+and deferral during a critical section. Merely saying "existing delivery
+path" omits exactly the work the task asks the proposal to assess.
+Relevant source anchors: Linux v6.12 virtio_transport.c send fast path and
+fallback worker, virtio_vsock_rx_done/tx_done; vhost/vsock.c
+vhost_vsock_handle_tx_kick and vhost_transport_do_send_pkt; repository
+carrier.c:klet_do_vcpu_kick/klet_virq_raise and the accepted kicking/virtual
+interrupt chapters.
+Necessary fix: add concise, directional notification traces alongside the
+copy paths, distinguishing shared-memory accesses, optional doorbell exits,
+in-kernel eventfd handling, backend scheduling, interrupt injection/entry,
+and endpoint wakeup. For klet-vsock distinguish the implemented Linux wait
+queue/carrier wake from the planned readiness-event/virtual-interrupt path;
+include running, idle, blocked, and remote CPU behavior with links to the
+actual mechanisms. Keep acceleration/suppression qualifications and the
+explicit statement that cheaper interrupt delivery has not been measured.
+This is a documentation/source-inspection fix, not a demand to implement the
+planned scheduler path or exhaustively measure every mechanism.
+
+E4 [P2, missing requested focused evidence or practicality rationale]
+Location: proposal:254,269,288; prototype/host/runtime/run-vsock.c:407-515.
+All measurements include the known suboptimal tenant syscall path. The task
+explicitly requests channel-API measurements where practical; the proposal
+changes this into an optional future addition without explaining why it is
+impractical now. There is a substantial end-to-end gap, and the existing
+safe read_bytes/write_bytes methods and integrated test kernel make a small
+direct-API experiment appear feasible. Acknowledging unmeasured causes is
+honest but does not fulfill the requested effort to separate channel and
+syscall costs.
+Necessary fix: add a small integrated direct-vOSTD API measurement at >=4 KiB
+requested operations and clearly separate its scope from tenant end-to-end
+results, or give a concrete evidence-based reason it is impractical and
+record an appropriate narrower focused experiment. Do not infer isolated
+notification cost or virtio superiority from the added bulk measurement.
+
+Nonblocking improvements
+
+E5 [P3, useful functional coverage]
+Location: host/runtime/run-vsock.c:355-397.
+The deterministic full-ring test resumes its blocked writer only by peer
+death. Ordinary echo uses requested operations no larger than capacity and
+does not deterministically demonstrate a writer blocked for space resuming
+after peer consumption. A small controlled consume-and-resume check would
+strengthen the consumption wakeup/backpressure claim. The existing test does
+establish full-ring backpressure and death wakeup, so this is not counted as
+a separate blocking demand.
+
+E6 [P3, lifecycle exposition]
+Location: proposal:111-123.
+The lifecycle diagram omits connecting/waiting and interruption outcomes.
+State explicitly how a backlog-blocked connect and empty accept are canceled,
+what a host signal reports/restarts, and what peer listener close versus
+sandbox death does. This should describe the existing prototype semantics,
+not introduce a production timeout requirement.
+
+E7 [P3, typo]
+Location: proposal:226: remove the doubled comma after the UAPI header path.
+
+Evidence and writing assessment
+The test demonstrates distinct connect/accept endpoints, real tenant data
+syscalls, host/tenant paths in both initiation directions, two independent
+sandboxes, wrapping payloads, partial faults, peer death, and a survivor
+reconnecting. Capacities and transfer sizes are separated, CPU placement is
+matched in the guest, repetitions and raw samples are present, and uncontrolled
+physical placement/host load are disclosed. The negative pipe comparison is
+appropriate evidence for this experimental implementation. No measured
+superiority over virtio or cheaper interrupt delivery is claimed. The proposal
+is generally concise, organized from concepts to mechanisms, uses the local
+background-box style, and preserves proposal/acceptance distinction.

@@ -36,7 +36,7 @@
 /* The image ABI. Mirrors vostd/src/abi.rs; keep the two in step.     */
 /* ------------------------------------------------------------------ */
 
-#define KLET_ABI_VERSION 6ULL
+#define KLET_ABI_VERSION 7ULL
 
 /* Errors of the vm_* services, returned negated. */
 #define KLET_INVALID	1	/* an address outside the area, a bad argument, a space not this kernelet's, an entry already present */
@@ -220,6 +220,8 @@ struct klet_vcpu_rec {
 /* The summary bit for device lines. Nothing raises it in this prototype. */
 #define KLET_VIRQ_LINES (1u << 2)
 
+struct klet_vsock_req;
+
 struct klet_services {
 	u64 abi_version;
 	void (*log_write)(const char *ptr, u64 len);
@@ -248,6 +250,8 @@ struct klet_services {
 	void (*stop)(u64 code);
 	/* The console, what the kernel proper prints; log_write is vOSTD's log. */
 	void (*console_write)(const char *ptr, u64 len);
+	// Performs an experimental owner-scoped socket or ring operation.
+	s64 (*vsock)(struct klet_vsock_req *req);
 };
 
 struct klet_entry_table {
@@ -556,6 +560,11 @@ struct klet_out {
 };
 
 struct klet_inst {
+	// The experimental channel identity and runtime-authorized peers.
+	u64 vsock_cid;
+	kuid_t vsock_uid;
+	u64 vsock_allow[16];
+	unsigned int vsock_nr_allow;
 	refcount_t refs;		/* the sandbox file's, and each carrier record's */
 	struct klet_kind *kind;
 	void *image_base;
@@ -778,6 +787,7 @@ enum klet_svc_op {
 	KLET_SVC_VM_WAIT,
 	KLET_SVC_VM_WAKE,
 	KLET_SVC_CONSOLE_WRITE,
+	KLET_SVC_VSOCK,
 };
 
 /*
@@ -805,6 +815,14 @@ void klet_yield_stub(void);
 
 /* carrier.c */
 void klet_svc_body(struct klet_svc_args *args);
+u64 klet_vsock_new_cid(void);
+long klet_vsock_socket(void);
+long klet_vsock_permit(struct klet_inst *a, struct klet_inst *b);
+s64 klet_vsock_service(struct klet_inst *inst, struct klet_vsock_req *req);
+void klet_vsock_wake(void);
+void klet_vsock_gone(struct klet_inst *inst);
+void klet_vsock_report(void);
+long klet_vsock_profile_report(bool reset);
 void klet_evict_leave(void);
 unsigned long klet_yield_body(void);
 struct klet_carrier *klet_carrier_new(struct klet_inst *inst, int vcpu);

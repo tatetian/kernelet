@@ -1,0 +1,134 @@
+{
+  "label": "profile-mode-2",
+  "mode": "profile",
+  "qemu_command": [
+    "qemu-system-x86_64",
+    "-enable-kvm",
+    "-cpu",
+    "host",
+    "-smp",
+    "2",
+    "-m",
+    "512M",
+    "-nographic",
+    "-no-reboot",
+    "-monitor",
+    "none",
+    "-S",
+    "-qmp",
+    "unix:/root/Workspace/kernelet/prototype/.build/vsock-profile-mode-2/qmp.sock,server=on,wait=off",
+    "-kernel",
+    "/root/Workspace/kernelet/prototype/.build/linux-6.12/arch/x86/boot/bzImage",
+    "-initrd",
+    "/root/Workspace/kernelet/prototype/.build/initramfs.cpio.gz",
+    "-append",
+    "console=ttyS0 panic=-1",
+    "-serial",
+    "file:/root/Workspace/kernelet/prototype/.build/vsock-profile-mode-2/serial.txt",
+    "-device",
+    "vhost-vsock-pci,guest-cid=3379171,disable-legacy=on"
+  ],
+  "host_kernel": "6.8.0-100-generic",
+  "guest_cid": 3379171,
+  "peer_cpu": 0,
+  "caller_cpu": 1,
+  "house_cpu": 2,
+  "topology_limit": "virtio peer is outer-host Linux; pipe/klet peers are guest Linux",
+  "outer_window": "includes untimed control start acknowledgement and end token",
+  "profiling": true,
+  "notification_mode": 2,
+  "source_sha256": {
+    "host/runtime/klet-vsock.h": "e7a5329489f8caf0a2233e73426117a8fef473384c77847e122d4bcf1ad64e32",
+    "host/runtime/run-vsock.c": "b2304163af4eee27ec074c171de33bea3d1eacc100de644ba4a62b6164db942c",
+    "host/runtime/vsock-bench.h": "832676df26bc7d3c79979d9228a4fd31d00d332bc6632751ccb88df706e34816",
+    "host/runtime/vsock-peer.c": "99944292d4192bb3e23fc28fe557e7a1f1489988cab30e5dd59cb242a4edec58",
+    "linux/endovisor/vsock.c": "bdb7567cad8ff746ed914a5f71d3bb7e7300407217c6799d4e1b7f7acc79d449",
+    "linux/config.fragment": "17088d8dd8de775c96337be04b0de73a86caea3c78c349f60a92e273d78c9282",
+    "vostd/src/vsock.rs": "6bbfe33fd3bf94ed2930eba886edd426edc222c032629fb575bfce2431ad6b34",
+    "vostd/src/mm/io.rs": "1af2569b1520ad2f9a88a32b9c4fedf4992a595c6bc927c425a11a701376b0c1",
+    "vostd/src/abi.rs": "62925645bbef5e1a2174ce988d85dc05a86d21969c9210928097b726f58d8c7f",
+    "linux/endovisor/kernelet.h": "e3832ae9185b931c486c5a799a4189a9104f52b3b99372281052c3a9a92288c0",
+    "linux/endovisor/carrier.c": "28fa32fa77c8fa7773b7667030fac1fa3751776f1ab5b7acbfd142fdda1f656b",
+    "linux/endovisor/sandbox.c": "afcc791f383e0cfa67cf5d761f9a22babd48ff70595d33b4f003b66bf25a39fe",
+    "linux/endovisor/main.c": "90e0b3440eaeac40852bae15e8f239cab3eaa7d80412626de73e3a19ac38f97c",
+    "linux/endovisor/uapi/klet-vsock.h": "4ed3491cf9c3b9150cce49dc070a29fe7741cdec55b6ba6331d5b476957ba444",
+    "Makefile": "0e35793583095b38f44a20f8d7e919b6b48d8c337b1bf0b5e1850f8f36d93067",
+    "kernels/vsock/src/lib.rs": "a321dc13f6066e158ca4bc982af6813671ef7cec2689c76b954304554eac000e",
+    "kernels/vsock/tenant.S": "4cd9680c0169c8fb7b16e0868d9f19b2fe1cb4db30ae19afa670feedbe2bb6ea",
+    "tools/run-vsock-comparison.py": "1f12af957a185bec1bb03be70d692619e91a4f2b6b1574cf9ccf0f7773ec2671"
+  },
+  "binary_sha256": {
+    ".build/linux-6.12/arch/x86/boot/bzImage": "5911b0848e56573a60726ec427e7794faa0e2f028ee084d089be16897dd39389",
+    ".build/linux-6.12/.config": "6d9770166abf2586fbf9046a4104e304d9dbc20fdf0428b23d36b7cb3383786c",
+    "linux/endovisor/endovisor.ko": "78a06bd8ac67216bbe2149f906aedc2d9b911e85be26db963d8e7af180d15aab",
+    ".build/vsocktest.image": "fd3030531923c0e80c08d765bd2f7e0fbb1e6190059add437dd2893ca32b2e55",
+    ".build/vsock-peer": "96d03a31a37226aa6d4826ed454a4993b14fb179a4fb7a7494fb510dc784995e"
+  },
+  "cpu_model": "model name\t: Intel(R) Xeon(R) CPU E3-1270 v6 @ 3.80GHz",
+  "load_before": "1.51 1.26 1.04 1/1068 3279694",
+  "host_halt_poll_ns": "200000",
+  "guest_virtio_irq_cpu": 1,
+  "cpu_governor": {
+    "0": "powersave",
+    "1": "powersave",
+    "2": "powersave"
+  },
+  "qemu_version": "QEMU emulator version 10.0.92",
+  "qemu_pid": 3279697,
+  "vcpu_threads": [
+    {
+      "thread-id": 3279700,
+      "qom-type": "host-x86_64-cpu",
+      "props": {
+        "core-id": 0,
+        "thread-id": 0,
+        "socket-id": 0
+      },
+      "qom-path": "/machine/unattached/device[0]",
+      "cpu-index": 0,
+      "target": "x86_64"
+    },
+    {
+      "thread-id": 3279701,
+      "qom-type": "host-x86_64-cpu",
+      "props": {
+        "core-id": 1,
+        "thread-id": 0,
+        "socket-id": 0
+      },
+      "qom-path": "/machine/unattached/device[2]",
+      "cpu-index": 1,
+      "target": "x86_64"
+    }
+  ],
+  "qemu_affinity": {
+    "3279697": [
+      2
+    ],
+    "3279698": [
+      2
+    ],
+    "3279699": [
+      2
+    ],
+    "3279700": [
+      0
+    ],
+    "3279701": [
+      1
+    ],
+    "3279702": [
+      0
+    ]
+  },
+  "vhost_workers": [
+    {
+      "pid": 3279702,
+      "comm": "vhost-3497982",
+      "affinity": [
+        0
+      ]
+    }
+  ],
+  "load_after": "1.55 1.27 1.05 1/1069 3279704"
+}

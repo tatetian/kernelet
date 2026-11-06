@@ -31,6 +31,7 @@ CONFIG_KVM_GUEST=y
 
 # --- firmware and buses: ACPI + PCI, needed for a clean QEMU poweroff ---
 CONFIG_PCI=y
+CONFIG_PCI_MSI=y
 CONFIG_ACPI=y
 
 # --- console ------------------------------------------------------------
@@ -160,6 +161,11 @@ CONFIG_VIRTIO_MENU=y
 CONFIG_VIRTIO=y
 CONFIG_VIRTIO_PCI=y
 CONFIG_VIRTIO_BLK=y
+# The comparison benchmark uses a real host/guest virtio-vsock path.
+CONFIG_VSOCKETS=y
+CONFIG_VIRTIO_VSOCKETS=y
+# CONFIG_VSOCKETS_LOOPBACK is not set
+# CONFIG_VSOCKETS_DIAG is not set
 CONFIG_LRU_GEN=y
 CONFIG_LRU_GEN_ENABLED=y
 CONFIG_COMPACTION=y

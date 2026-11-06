@@ -1,0 +1,89 @@
+Round 1 independent adversarial review: Linux integration, synchronization,
+notification, teardown, lifecycle, accounting, and carrier contracts.
+Branch inspected: design/klet-vsock (uncommitted experiment).
+Reviewer read AGENTS.md and tmp-klet-vsock-prompt.md, the changed Linux and
+vOSTD interfaces, the integrated kernel/runtime tests, proposal, and evidence.
+No implementation changes or QEMU runs were made by this reviewer.
+
+Verdict: BLOCKING OBJECTIONS REMAIN. Keep the proposal Draft until L1 is fixed
+and validated. No inspected mechanism establishes that shared ring storage
+cannot work; the objection concerns this implementation's EOF ordering.
+
+L1. P1 / blocking: concurrent SHUT_WR can expose EOF before an in-flight write.
+Locations: prototype/linux/endovisor/vsock.c:240, :321-328, :334-350, :465-470,
+and :503; proposal:171 claims write shutdown permits draining before EOF.
+
+Concrete execution on a host-connected descriptor:
+  1. Thread A starts write(). kv_io reserves a TX span under kv_lock, unlocks,
+     then copies userspace bytes. Pause it during copy_from_iter (a missing
+     userfaultfd-managed source page is one way to do so). tail is unchanged,
+     but tx_lease is nonzero.
+  2. Thread B runs kv_shutdown(fd, 1). KVS_SHUTDOWN sets wr_closed immediately
+     and wakes the peer, with no ordering against the active TX reservation.
+  3. The peer reads the empty ring. kv_reserve(RX) sees peer->wr_closed and
+     returns zero. Its application observes EOF.
+  4. A finishes its copy. COMMIT_TX does not reject or defer a commit after
+     wr_closed; it advances tail. A subsequent peer read can now return bytes
+     after the previously observed EOF.
+
+Thus EOF is not terminal, and an application which correctly stops reading at
+EOF loses bytes from a write which later reports success. The Socket !Sync
+restriction does not prevent this: host file descriptors are shared between
+threads, and the host adapter already exposes concurrent write and shutdown.
+This violates the claimed stream half-close behavior, rather than merely a
+deferred POSIX compatibility feature or the declared carrier-wait limitation.
+
+Necessary fix: order outgoing FIN/EOF after an already granted TX reservation
+has resolved. For example, prevent new TX reservations on write shutdown but
+consider the peer send half fully closed only when its ring's tx_lease is zero;
+make both read readiness and empty-ring read use that condition, and wake when
+the lease resolves. Alternatively safely serialize/cancel writes against
+shutdown without reusing reserved bytes while a copy can still run. Add a
+deterministic regression that pauses a host write after reservation, performs
+SHUT_WR concurrently, verifies that the peer does not observe early EOF,
+resumes the write, and verifies all successful bytes precede terminal EOF.
+
+L2. P2 / must correct before presenting the resource guarantee: 128 endpoints
+do not imply a maximum of 64 allocated connections / 8 MiB payload storage.
+Locations: proposal:181; prototype/linux/endovisor/vsock.c:125-138, :295-309.
+
+Closing one endpoint retains both rings whenever the other endpoint survives.
+Create connected pairs, keep one endpoint per pair, and close each opposite
+endpoint: those connections now consume one table slot apiece. Repeat using
+additional authorized sandboxes/UID owners as needed to respect the per-owner
+limit. More than 64 live connections and therefore more than 8 MiB payload
+storage can coexist. kv_live_connections counts connections but does not cap
+their creation. The invariant that each live connection has at least one live
+endpoint supplies a conservative 16 MiB payload bound for 128 endpoints, not
+the documented 8 MiB. Exact reachable maxima depend on temporary listener and
+setup endpoints; they are not needed to disprove the claim.
+
+Necessary fix: either enforce a separate global connection limit of 64 at
+connection setup (checking it under kv_lock), or document and justify the
+larger safe bound including half-closed/peerless connections. Include retained
+one-endpoint connections in a limit regression or explain the bound directly.
+This is a false resource guarantee, not unbounded allocation; the current
+table still supplies a finite global bound.
+
+Other inspected paths and declared limitations:
+- The generation snapshot/recheck protocol appears to prevent lost wakeups
+  across the mutex-unlock-to-wait window. Publication and reservation under
+  kv_lock also supply payload visibility ordering. The global wake queue is
+  inefficient under many channels, but no missed-wakeup bug was established.
+- Killing marks owner->dying and wakes waiters immediately; broker endpoint
+  reclamation occurs only once all image carriers are gone. Surviving endpoints
+  retain ring allocations, and no Linux metadata lock spans an image copy.
+  This is consistent with abandoning image state at forced teardown. Existing
+  tests cover killed readers, writers, backlog connectors, and a reconnecting
+  survivor; they do not yet force eviction during a reserved image copy.
+- Parking an entire carrier for a socket operation is explicitly declared.
+  It can prevent other tasks on that vCPU from running, but the proposal does
+  not claim implemented task-level readiness. This is an experiment limitation,
+  not proof of failure of a future task-level event protocol.
+- Fixed endpoint/backlog/permission limits, absent permission revocation,
+  creator-UID host namespaces, lack of AF_VSOCK compatibility, and charging
+  retained allocations to the original allocating context are declared limits.
+  They are not presented here as hidden contract violations.
+- Current tests only exercise sequential half-close and do not rule out L1.
+  The source-level interleaving is sufficient to identify the failure; this
+  reviewer did not execute a runtime reproduction against shared QEMU state.

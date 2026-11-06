@@ -24,3 +24,4 @@
 
 - [Contributing a design proposal](design-proposals/README.md)
 - [Design proposal template](design-proposals/template.md)
+- [2026-11-06 Kernelet Vsock](design-proposals/2026-11-06-kernelet-vsock.md)

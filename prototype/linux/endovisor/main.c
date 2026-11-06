@@ -57,6 +57,7 @@
 #include <asm/tsc.h>
 
 #include "kernelet.h"
+#include "uapi/klet-vsock.h"
 
 struct klet_totals klet_totals;
 struct workqueue_struct *klet_wq;
@@ -546,6 +547,12 @@ static long klet_dev_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 	void __user *uarg = (void __user *)arg;
 
 	switch (cmd) {
+	case KLET_VSOCK_SOCKET:
+		return klet_vsock_socket();
+	case KLET_VSOCK_PROFILE_RESET:
+		return klet_vsock_profile_report(true);
+	case KLET_VSOCK_PROFILE_REPORT:
+		return klet_vsock_profile_report(false);
 	case KLET_GET_API_VERSION:
 		return KLET_API_VERSION;
 	case KLET_KIND_REGISTER:
@@ -627,6 +634,7 @@ static void __exit klet_exit(void)
 	struct klet_totals *t = &klet_totals;
 	int i;
 
+	klet_vsock_report();
 	misc_deregister(&klet_misc);
 	unregister_binfmt(&klet_format);
 	/* Waits for a destroy that a release left to the exit path, and the drains. */

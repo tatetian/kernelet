@@ -111,6 +111,8 @@ else ifeq ($(KLET_KERNEL),mem)
 KERNEL_PROPER_DEP := $(CURDIR)/kernels/mem/mem
 else ifeq ($(KLET_KERNEL),piecheck)
 KERNEL_PROPER_DEP :=
+else ifeq ($(KLET_KERNEL),vsocktest)
+KERNEL_PROPER_DEP := $(CURDIR)/kernels/vsock/tenant
 else
 $(error KLET_KERNEL=$(KLET_KERNEL) is not a kernel proper of this repository: hello, probe, yieldk, schedk, mem or piecheck)
 endif
@@ -327,6 +329,39 @@ $(SCHED_ELF): $(CURDIR)/kernels/sched/sched.S
 
 $(CURDIR)/kernels/mem/mem: $(CURDIR)/kernels/mem/mem.S
 	gcc -static -nostdlib $< -o $@
+
+$(CURDIR)/kernels/vsock/tenant: $(CURDIR)/kernels/vsock/tenant.S
+	gcc -static -nostdlib $< -o $@
+
+.PHONY: vsock stage-vsock check-vsock
+VSOCK_RUN_MODE ?=
+VSOCK_PROFILE ?= 0
+VSOCK_OPT ?= 2
+stage-vsock: endovisor-module image runtime
+	$(RT_CC) -o $(BUILD)/run-vsock $(RT_SRC)/run-vsock.c $(RT_SRC)/sandbox.c -lpthread
+	$(call stage_base,klet_test_hooks=1 klet_vsock_profile=$(VSOCK_PROFILE) klet_vsock_opt=$(VSOCK_OPT))
+	cp $(BUILD)/run-vsock $(STAGE)/run-vsock
+	$(call stage_cmd,vsock)
+	printf '%s\n' 'run /run-vsock /vsocktest.image $(VSOCK_RUN_MODE)' > $(STAGE)/tests/10-vsock.cmd
+
+vsock:
+	$(MAKE) KLET_KERNEL=vsocktest linux
+	$(MAKE) KLET_KERNEL=vsocktest stage-vsock initramfs
+	$(MAKE) run TIMEOUT=$(call boot_timeout,180)
+	cp $(SERIAL) $(BUILD)/serial-vsock.log
+	$(MAKE) check-vsock
+
+check-vsock:
+	python3 tools/check-vsock.py $(BUILD)/serial-vsock.log
+
+.PHONY: vsock-compare vsock-profile
+VSOCK_LABEL ?= comparison
+vsock-compare: linux
+	python3 tools/run-vsock-comparison.py --label $(VSOCK_LABEL) --optimization $(VSOCK_OPT)
+	python3 tools/check-vsock-comparison.py $(BUILD)/vsock-$(VSOCK_LABEL)
+
+vsock-profile: linux
+	python3 tools/run-vsock-comparison.py --label $(VSOCK_LABEL) --mode profile --optimization $(VSOCK_OPT)
 
 # One module for every kernel proper: the images are files of their own.
 endovisor-module:

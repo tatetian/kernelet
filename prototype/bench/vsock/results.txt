@@ -1,0 +1,114 @@
+Historical preoptimization Kernelet Vsock experiment, 2026-11-06
+Branch: design/klet-vsock
+Base: 9cb55ec (working-tree experiment; source fingerprints below)
+Command: make -C prototype vsock
+Retained complete serial log: prototype/bench/vsock/serial.txt
+Recheck: python3 prototype/bench/vsock/check-initial.py prototype/bench/vsock/serial.txt
+Guest Linux: 6.12, repository config.fragment and carrier-hooks patch
+Image ABI: 7
+QEMU: QEMU emulator version 10.0.92
+Acceleration: KVM; 2 vCPUs; 512 MiB guest RAM
+Host CPU model: Intel(R) Xeon(R) CPU E3-1270 v6 @ 3.80GHz
+Placement: guest CPU 1 host caller; guest CPU 0 carrier or pipe child.
+QEMU vCPUs were not pinned to physical host CPUs; host load was not controlled.
+Each directional ring/pipe: 65,536 bytes.
+Workload: serialized echo; 32 warmups, 1024 timed RTTs, 3 repetitions.
+Transfer sizes: 4096, 16384, 65536 bytes; both-direction bytes in throughput.
+Timing includes integrity verification. Latencies are RTT percentiles.
+CPU: caller process CPU clock plus peer /proc/PID/schedstat runtime.
+This is not whole-machine CPU accounting or a virtio-vsock comparison.
+Pipe/klet order alternates; the direct-vOSTD API peer runs after each pair.
+API peer uses kernel buffers, omitting tenant syscalls and page-table walks.
+It retains host syscalls, application/ring copies, services and carrier waits.
+Module: klet_test_hooks=1. Delay hook used only by correctness endpoints;
+all benchmark endpoints have delay zero.
+No small-message performance or virtual-interrupt speedup claim.
+
+Functional markers and raw samples:
+VSOCK-TEST: ok socket lifecycle, partial transfers, wraparound, ordered payload, half-close EOF
+VSOCK-TEST: ok default denial, explicit permission, and dead CID refusal
+VSOCK-TEST: ok partial user faults publish or consume only copied prefixes and cancel empty leases
+VSOCK-TEST: ok independent kernelet peers verified echoed payloads through shared rings
+VSOCK-TEST: ok surviving kernelet observes reset and exchanges verified data after peer destruction
+VSOCK-TEST: ok host listener accepts a tenant-initiated connection
+VSOCK-TEST: ok kill wakes blocked reader and releases peer-owned resources
+VSOCK-TEST: ok kill wakes blocked writer and releases peer-owned resources
+VSOCK-TEST: ok kill wakes blocked connect with full backlog and releases peer-owned resources
+VSOCK-TEST: ok reservation survives concurrent shutdown until publication
+VSOCK-TEST: ok reservation survives peer destruction
+VSOCK-TEST: ok controlled consumption wakes full-ring writer without peer death
+VSOCK-TEST: ok socket lifecycle, partial transfers, wraparound, ordered payload, half-close EOF
+VSOCK-TEST: BENCH transport=pipe size=4096 repeat=1 rounds=1024 bytes=8388608 wall_ns=27142848 cpu_ns=13669128 peer_cpu_ns=13311487 p50_ns=26140 p95_ns=31624
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=1 rounds=1024 bytes=8388608 wall_ns=31983200 cpu_ns=14880504 peer_cpu_ns=19378782 p50_ns=31842 p95_ns=44813
+VSOCK-TEST: BENCH transport=api size=4096 repeat=1 rounds=1024 bytes=8388608 wall_ns=30399257 cpu_ns=16887874 peer_cpu_ns=15570893 p50_ns=31606 p95_ns=41142
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=2 rounds=1024 bytes=8388608 wall_ns=32524973 cpu_ns=14107028 peer_cpu_ns=20795508 p50_ns=32030 p95_ns=45026
+VSOCK-TEST: BENCH transport=pipe size=4096 repeat=2 rounds=1024 bytes=8388608 wall_ns=24079595 cpu_ns=11964753 peer_cpu_ns=12049678 p50_ns=22872 p95_ns=27753
+VSOCK-TEST: BENCH transport=api size=4096 repeat=2 rounds=1024 bytes=8388608 wall_ns=32707308 cpu_ns=19242578 peer_cpu_ns=15514830 p50_ns=31820 p95_ns=45858
+VSOCK-TEST: BENCH transport=pipe size=4096 repeat=3 rounds=1024 bytes=8388608 wall_ns=23884951 cpu_ns=11597929 peer_cpu_ns=12050725 p50_ns=22510 p95_ns=27274
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=3 rounds=1024 bytes=8388608 wall_ns=33182837 cpu_ns=13544213 peer_cpu_ns=22079709 p50_ns=32035 p95_ns=50555
+VSOCK-TEST: BENCH transport=api size=4096 repeat=3 rounds=1024 bytes=8388608 wall_ns=30778112 cpu_ns=15610030 peer_cpu_ns=17181676 p50_ns=31608 p95_ns=45056
+VSOCK-TEST: BENCH transport=pipe size=16384 repeat=1 rounds=1024 bytes=33554432 wall_ns=28391450 cpu_ns=14311783 peer_cpu_ns=13942992 p50_ns=26880 p95_ns=31824
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=1 rounds=1024 bytes=33554432 wall_ns=51027581 cpu_ns=24281627 peer_cpu_ns=30208781 p50_ns=44428 p95_ns=66952
+VSOCK-TEST: BENCH transport=api size=16384 repeat=1 rounds=1024 bytes=33554432 wall_ns=43057832 cpu_ns=25169632 peer_cpu_ns=21023179 p50_ns=42811 p95_ns=62981
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=2 rounds=1024 bytes=33554432 wall_ns=53341206 cpu_ns=23969800 peer_cpu_ns=33043108 p50_ns=45286 p95_ns=75400
+VSOCK-TEST: BENCH transport=pipe size=16384 repeat=2 rounds=1024 bytes=33554432 wall_ns=30638340 cpu_ns=14802772 peer_cpu_ns=15788373 p50_ns=28177 p95_ns=43539
+VSOCK-TEST: BENCH transport=api size=16384 repeat=2 rounds=1024 bytes=33554432 wall_ns=41691943 cpu_ns=24417940 peer_cpu_ns=20302060 p50_ns=38818 p95_ns=57920
+VSOCK-TEST: BENCH transport=pipe size=16384 repeat=3 rounds=1024 bytes=33554432 wall_ns=27666798 cpu_ns=13848897 peer_cpu_ns=13616500 p50_ns=25958 p95_ns=31236
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=3 rounds=1024 bytes=33554432 wall_ns=48968214 cpu_ns=24111761 peer_cpu_ns=28155913 p50_ns=43697 p95_ns=65929
+VSOCK-TEST: BENCH transport=api size=16384 repeat=3 rounds=1024 bytes=33554432 wall_ns=43548459 cpu_ns=25482573 peer_cpu_ns=21136714 p50_ns=42624 p95_ns=63872
+VSOCK-TEST: BENCH transport=pipe size=65536 repeat=1 rounds=1024 bytes=134217728 wall_ns=41135955 cpu_ns=21247072 peer_cpu_ns=19674977 p50_ns=38812 p95_ns=45859
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=1 rounds=1024 bytes=134217728 wall_ns=85997206 cpu_ns=49540791 peer_cpu_ns=41419955 p50_ns=80881 p95_ns=106641
+VSOCK-TEST: BENCH transport=api size=65536 repeat=1 rounds=1024 bytes=134217728 wall_ns=80917261 cpu_ns=47440873 peer_cpu_ns=37965614 p50_ns=78444 p95_ns=101699
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=2 rounds=1024 bytes=134217728 wall_ns=85291424 cpu_ns=49628674 peer_cpu_ns=40528791 p50_ns=80800 p95_ns=105602
+VSOCK-TEST: BENCH transport=pipe size=65536 repeat=2 rounds=1024 bytes=134217728 wall_ns=42199020 cpu_ns=21752614 peer_cpu_ns=20143186 p50_ns=39190 p95_ns=53105
+VSOCK-TEST: BENCH transport=api size=65536 repeat=2 rounds=1024 bytes=134217728 wall_ns=81618427 cpu_ns=48054958 peer_cpu_ns=38206561 p50_ns=78425 p95_ns=96960
+VSOCK-TEST: BENCH transport=pipe size=65536 repeat=3 rounds=1024 bytes=134217728 wall_ns=52978481 cpu_ns=27435298 peer_cpu_ns=25103069 p50_ns=54150 p95_ns=67870
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=3 rounds=1024 bytes=134217728 wall_ns=85379406 cpu_ns=49760436 peer_cpu_ns=40536207 p50_ns=81066 p95_ns=96927
+VSOCK-TEST: BENCH transport=api size=65536 repeat=3 rounds=1024 bytes=134217728 wall_ns=82394827 cpu_ns=49177456 peer_cpu_ns=37929926 p50_ns=78441 p95_ns=101619
+VSOCK-TEST: PASS lifecycle, rings, backpressure, peer death, survivors, end-to-end measurements
+kernelet: VSOCK: 0 endpoints live, 0 connections live, 88516 waits, 1091210785 bytes published
+
+Summary:
+size | transport | median MiB/s | median p50 us | median p95 us | median CPU ns/byte
+4096 | pipe | 332.2 | 22.87 | 27.75 | 2.863
+4096 | klet | 246.0 | 32.03 | 45.03 | 4.161
+4096 | api | 259.9 | 31.61 | 45.06 | 3.909
+16384 | pipe | 1127.1 | 26.88 | 31.82 | 0.842
+16384 | klet | 627.1 | 44.43 | 66.95 | 1.624
+16384 | api | 743.2 | 42.62 | 62.98 | 1.377
+65536 | pipe | 3033.2 | 39.19 | 53.10 | 0.312
+65536 | klet | 1499.2 | 80.88 | 105.60 | 0.673
+65536 | api | 1568.3 | 78.44 | 101.62 | 0.643
+PASS: lifecycle, peer failure, reservation races, cleanup, and 27 measurements
+
+Source SHA-256:
+ced4e50f4993b769c92f39c20090ed4b0e6730a31cc079e1851d0ec8ed2ef137  prototype/vostd/src/vsock.rs
+62925645bbef5e1a2174ce988d85dc05a86d21969c9210928097b726f58d8c7f  prototype/vostd/src/abi.rs
+dbbc852a69ffbb8e68771e7a8f1bd40d68a26cf08ea1a38ea7e28e7f3aa12686  prototype/linux/endovisor/vsock.c
+913ebe1e2bb15b199b1de45c1955f26e5baa25db94148aa9b8554bfb5b1c4fff  prototype/linux/endovisor/kernelet.h
+28fa32fa77c8fa7773b7667030fac1fa3751776f1ab5b7acbfd142fdda1f656b  prototype/linux/endovisor/carrier.c
+afcc791f383e0cfa67cf5d761f9a22babd48ff70595d33b4f003b66bf25a39fe  prototype/linux/endovisor/sandbox.c
+f1f08e3e9ca8bf65bb836d53cb1338afe73c905d7a91626cdd2f6784241304ef  prototype/linux/endovisor/main.c
+191163ab842c3d25d68a5c01419595b6cbfa43f45dafc62b98004f42bc868b57  prototype/linux/endovisor/uapi/klet-vsock.h
+b52639bcb2a26c1bf83a86984a673a53591bf4d480183007f6ed14d1d8603507  prototype/kernels/vsock/src/lib.rs
+15a97fd336ba61781ff99a45ec15ba08caa7a4f45ebe8fe443c0c28e252b36dc  prototype/kernels/vsock/tenant.S
+b08afedaffa562845044d94c67b61b89e594d3addb2d13d716213e494f7b0783  prototype/host/runtime/run-vsock.c
+e7a5329489f8caf0a2233e73426117a8fef473384c77847e122d4bcf1ad64e32  prototype/host/runtime/klet-vsock.h
+fa14388f3bf86e8467fef2ac0317c030d92f11c6cbb9aae559c9be25bccf9439  prototype/tools/check-vsock.py
+
+Existing regression before the final channel-only fixes:
+make: Entering directory '/root/Workspace/kernelet/prototype'
+  PASS    hello (12 s)
+  PASS    pie (11 s)
+  PASS    probe (26 s)
+  PASS    yield (34 s)
+  PASS    sched-policy (16 s)
+  PASS    sched-coop (60 s)
+  PASS    sched-fpu (13 s)
+  PASS    mem-func (11 s)
+  PASS    mem-r2 (10 s)
+  PASS    mem-conc (13 s)
+  PASS    mem-kill (34 s)
+  PASS    mem-pressure (40 s)
+make test: PASS (12 tests, 280 s)
+make: Leaving directory '/root/Workspace/kernelet/prototype'

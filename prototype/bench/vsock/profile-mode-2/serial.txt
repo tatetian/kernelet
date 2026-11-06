@@ -1,0 +1,480 @@
+c[?7l[2J[0mSeaBIOS (version rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1EFD1B40+1EF31B40 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from ROM...
+c[?7l[2JLinux version 6.12.0 (root@tian-dev) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #24 SMP PREEMPT_DYNAMIC Fri Nov  6 04:34:26 UTC 2026
+Command line: console=ttyS0 panic=-1
+BIOS-provided physical RAM map:
+BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+BIOS-e820: [mem 0x0000000000100000-0x000000001ffdffff] usable
+BIOS-e820: [mem 0x000000001ffe0000-0x000000001fffffff] reserved
+BIOS-e820: [mem 0x00000000feffc000-0x00000000feffffff] reserved
+BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+NX (Execute Disable) protection: active
+APIC: Static calls initialized
+Hypervisor detected: KVM
+kvm-clock: Using msrs 4b564d01 and 4b564d00
+kvm-clock: using sched offset of 324062343 cycles
+clocksource: kvm-clock: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
+tsc: Detected 3791.992 MHz processor
+last_pfn = 0x1ffe0 max_arch_pfn = 0x400000000
+x86/PAT: PAT support disabled because CONFIG_X86_PAT is disabled in the kernel.
+x86/PAT: Configuration [0-7]: WB  WT  UC- UC  WB  WT  UC- UC  
+found SMP MP-table at [mem 0x000f54b0-0x000f54bf]
+Using GB pages for direct mapping
+RAMDISK: [mem 0x1fda9000-0x1ffdffff]
+ACPI: Early table checksum verification disabled
+ACPI: RSDP 0x00000000000F52D0 000014 (v00 BOCHS )
+ACPI: RSDT 0x000000001FFE2396 000034 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: FACP 0x000000001FFE2242 000074 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: DSDT 0x000000001FFE0040 002202 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: FACS 0x000000001FFE0000 000040
+ACPI: APIC 0x000000001FFE22B6 000080 (v03 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: HPET 0x000000001FFE2336 000038 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: WAET 0x000000001FFE236E 000028 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: Reserving FACP table memory at [mem 0x1ffe2242-0x1ffe22b5]
+ACPI: Reserving DSDT table memory at [mem 0x1ffe0040-0x1ffe2241]
+ACPI: Reserving FACS table memory at [mem 0x1ffe0000-0x1ffe003f]
+ACPI: Reserving APIC table memory at [mem 0x1ffe22b6-0x1ffe2335]
+ACPI: Reserving HPET table memory at [mem 0x1ffe2336-0x1ffe236d]
+ACPI: Reserving WAET table memory at [mem 0x1ffe236e-0x1ffe2395]
+Zone ranges:
+  DMA32    [mem 0x0000000000001000-0x000000001ffdffff]
+  Normal   empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000000001000-0x000000000009efff]
+  node   0: [mem 0x0000000000100000-0x000000001ffdffff]
+Initmem setup node 0 [mem 0x0000000000001000-0x000000001ffdffff]
+On node 0, zone DMA32: 1 pages in unavailable ranges
+On node 0, zone DMA32: 97 pages in unavailable ranges
+On node 0, zone DMA32: 32 pages in unavailable ranges
+ACPI: PM-Timer IO Port: 0x608
+ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+IOAPIC[0]: apic_id 0, version 17, address 0xfec00000, GSI 0-23
+ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
+ACPI: Using ACPI (MADT) for SMP configuration information
+ACPI: HPET id: 0x8086a201 base: 0xfed00000
+TSC deadline timer available
+CPU topo: Max. logical packages:   1
+CPU topo: Max. logical dies:       1
+CPU topo: Max. dies per package:   1
+CPU topo: Max. threads per core:   1
+CPU topo: Num. cores per package:     2
+CPU topo: Num. threads per package:   2
+CPU topo: Allowing 2 present CPUs plus 0 hotplug CPUs
+kvm-guest: APIC: eoi() replaced with kvm_guest_apic_eoi_write()
+kvm-guest: KVM setup pv remote TLB flush
+kvm-guest: setup PV sched yield
+[mem 0x20000000-0xfeffbfff] available for PCI devices
+Booting paravirtualized kernel on KVM
+clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
+setup_percpu: NR_CPUS:8 nr_cpumask_bits:2 nr_cpu_ids:2 nr_node_ids:1
+percpu: Embedded 43 pages/cpu s138688 r8192 d29248 u1048576
+Kernel command line: console=ttyS0 panic=-1
+random: crng init done
+Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+Built 1 zonelists, mobility grouping on.  Total pages: 130942
+mem auto-init: stack:off, heap alloc:off, heap free:off
+SLUB: HWalign=64, Order=0-1, MinObjects=0, CPUs=2, Nodes=1
+Dynamic Preempt: full
+rcu: Preemptible hierarchical RCU implementation.
+rcu: 	RCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=2.
+rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
+NR_IRQS: 4352, nr_irqs: 440, preallocated irqs: 16
+rcu: srcu_init: Setting srcu_struct sizes based on contention.
+Console: colour VGA+ 80x25
+printk: legacy console [ttyS0] enabled
+ACPI: Core revision 20240827
+clocksource: hpet: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604467 ns
+APIC: Switch to symmetric I/O mode setup
+kvm-guest: APIC: send_IPI_mask() replaced with kvm_send_ipi_mask()
+kvm-guest: APIC: send_IPI_mask_allbutself() replaced with kvm_send_ipi_mask_allbutself()
+kvm-guest: setup PV IPIs
+..TIMER: vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
+clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x6d519938aa3, max_idle_ns: 881591130365 ns
+Calibrating delay loop (skipped) preset value.. 7583.98 BogoMIPS (lpj=15167968)
+Last level iTLB entries: 4KB 0, 2MB 0, 4MB 0
+Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0
+Spectre V2 : User space: Vulnerable
+Speculative Store Bypass: Vulnerable
+SRBDS: Unknown: Dependent on hypervisor status
+x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+x86/fpu: Supporting XSAVE feature 0x008: 'MPX bounds registers'
+x86/fpu: Supporting XSAVE feature 0x010: 'MPX CSR'
+x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+x86/fpu: xstate_offset[3]:  832, xstate_sizes[3]:   64
+x86/fpu: xstate_offset[4]:  896, xstate_sizes[4]:   64
+x86/fpu: Enabled xstate features 0x1f, context size is 960 bytes, using 'compacted' format.
+Freeing SMP alternatives memory: 12K
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+smpboot: CPU0: Intel(R) Xeon(R) CPU E3-1270 v6 @ 3.80GHz (family: 0x6, model: 0x9e, stepping: 0x9)
+Performance Events: Skylake events, full-width counters, Intel PMU driver.
+... version:                2
+... bit width:              48
+... generic registers:      4
+... value mask:             0000ffffffffffff
+... max period:             00007fffffffffff
+... fixed-purpose events:   3
+... event mask:             000000070000000f
+signal: max sigframe size: 1616
+rcu: Hierarchical SRCU implementation.
+rcu: 	Max phase no-delay instances is 1000.
+smp: Bringing up secondary CPUs ...
+smpboot: x86: Booting SMP configuration:
+.... node  #0, CPUs:      #1
+smp: Brought up 1 node, 2 CPUs
+smpboot: Total of 2 processors activated (15167.96 BogoMIPS)
+Memory: 499872K/523768K available (6144K kernel code, 841K rwdata, 1656K rodata, 764K init, 384K bss, 22532K reserved, 0K cma-reserved)
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+NET: Registered PF_NETLINK/PF_ROUTE protocol family
+thermal_sys: Registered thermal governor 'step_wise'
+thermal_sys: Registered thermal governor 'user_space'
+cpuidle: using governor ladder
+PCI: Using configuration type 1 for base access
+ACPI: Added _OSI(Module Device)
+ACPI: Added _OSI(Processor Device)
+ACPI: Added _OSI(3.0 _SCP Extensions)
+ACPI: Added _OSI(Processor Aggregator Device)
+ACPI: 1 ACPI AML tables successfully acquired and loaded
+ACPI: Interpreter enabled
+ACPI: PM: (supports S0 S5)
+ACPI: Using IOAPIC for interrupt routing
+PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+PCI: Using E820 reservations for host bridge windows
+ACPI: Enabled 2 GPEs in block 00 to 0F
+ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+acpi PNP0A03:00: _OSC: OS supports [ASPM ClockPM Segments MSI HPX-Type3]
+acpi PNP0A03:00: PCIe port services disabled; not requesting _OSC control
+acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended configuration space under this bridge
+PCI host bridge to bus 0000:00
+pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
+pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
+pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]
+pci_bus 0000:00: root bus resource [mem 0x20000000-0xfebfffff window]
+pci_bus 0000:00: root bus resource [mem 0x100000000-0x17fffffff window]
+pci_bus 0000:00: root bus resource [bus 00-ff]
+pci 0000:00:00.0: [8086:1237] type 00 class 0x060000 conventional PCI endpoint
+pci 0000:00:01.0: [8086:7000] type 00 class 0x060100 conventional PCI endpoint
+pci 0000:00:01.1: [8086:7010] type 00 class 0x010180 conventional PCI endpoint
+pci 0000:00:01.1: BAR 4 [io  0xc040-0xc04f]
+pci 0000:00:01.1: BAR 0 [io  0x01f0-0x01f7]: legacy IDE quirk
+pci 0000:00:01.1: BAR 1 [io  0x03f6]: legacy IDE quirk
+pci 0000:00:01.1: BAR 2 [io  0x0170-0x0177]: legacy IDE quirk
+pci 0000:00:01.1: BAR 3 [io  0x0376]: legacy IDE quirk
+pci 0000:00:01.3: [8086:7113] type 00 class 0x068000 conventional PCI endpoint
+pci 0000:00:01.3: quirk: [io  0x0600-0x063f] claimed by PIIX4 ACPI
+pci 0000:00:01.3: quirk: [io  0x0700-0x070f] claimed by PIIX4 SMB
+pci 0000:00:02.0: [1234:1111] type 00 class 0x030000 conventional PCI endpoint
+pci 0000:00:02.0: BAR 0 [mem 0xfd000000-0xfdffffff pref]
+pci 0000:00:02.0: BAR 2 [mem 0xfebf0000-0xfebf0fff]
+pci 0000:00:02.0: ROM [mem 0xfebe0000-0xfebeffff pref]
+pci 0000:00:02.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]
+pci 0000:00:03.0: [8086:100e] type 00 class 0x020000 conventional PCI endpoint
+pci 0000:00:03.0: BAR 0 [mem 0xfebc0000-0xfebdffff]
+pci 0000:00:03.0: BAR 1 [io  0xc000-0xc03f]
+pci 0000:00:03.0: ROM [mem 0xfeb80000-0xfebbffff pref]
+pci 0000:00:04.0: [1af4:1053] type 00 class 0x078000 conventional PCI endpoint
+pci 0000:00:04.0: BAR 1 [mem 0xfebf1000-0xfebf1fff]
+pci 0000:00:04.0: BAR 4 [mem 0xfe000000-0xfe003fff 64bit pref]
+ACPI: PCI: Interrupt link LNKA configured for IRQ 10
+ACPI: PCI: Interrupt link LNKB configured for IRQ 10
+ACPI: PCI: Interrupt link LNKC configured for IRQ 11
+ACPI: PCI: Interrupt link LNKD configured for IRQ 11
+ACPI: PCI: Interrupt link LNKS configured for IRQ 9
+PCI: Using ACPI for IRQ routing
+pci 0000:00:02.0: vgaarb: setting as boot VGA device
+pci 0000:00:02.0: vgaarb: bridge control possible
+pci 0000:00:02.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+vgaarb: loaded
+clocksource: Switched to clocksource kvm-clock
+pnp: PnP ACPI init
+pnp: PnP ACPI: found 6 devices
+clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
+pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
+pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
+pci_bus 0000:00: resource 7 [mem 0x20000000-0xfebfffff window]
+pci_bus 0000:00: resource 8 [mem 0x100000000-0x17fffffff window]
+pci 0000:00:01.0: PIIX3: Enabling Passive Release
+pci 0000:00:00.0: Limiting direct PCI/PCI transfers
+PCI: CLS 0 bytes, default 64
+RAPL PMU: API unit is 2^-32 Joules, 0 fixed counters, 10737418240 ms ovfl timer
+clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x6d519938aa3, max_idle_ns: 881591130365 ns
+Unpacking initramfs...
+workingset: timestamp_bits=46 max_order=17 bucket_order=0
+io scheduler mq-deadline registered
+io scheduler kyber registered
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+ACPI: button: Power Button [PWRF]
+ACPI: \_SB_.LNKD: Enabled at IRQ 11
+Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+00:04: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+i8042: PNP: PS/2 Controller [PNP0303:KBD,PNP0f13:MOU] at 0x60,0x64 irq 1,12
+serio: i8042 KBD port at 0x60,0x64 irq 1
+serio: i8042 AUX port at 0x60,0x64 irq 12
+intel_pstate: CPU model not supported
+NET: Registered PF_VSOCK protocol family
+Freeing initrd memory: 2268K
+IPI shorthand broadcast: enabled
+sched_clock: Marking stable (216563322, 141247988)->(377799682, -19988372)
+Freeing unused kernel image (initmem) memory: 764K
+Write protecting the kernel read-only data: 8192k
+Freeing unused kernel image (rodata/data gap) memory: 392K
+Run /init as init process
+input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input1
+
+========================================
+INIT: kernelet-in-Linux prototype harness
+========================================
+INIT: module order from /modules/order (1 entry)
+INIT: loading endovisor.ko klet_test_hooks=1 klet_vsock_profile=1 klet_vsock_opt=2
+endovisor: loading out-of-tree module taints kernel.
+kernelet: endovisor loaded: /dev/endovisor, API 2, image ABI 7, watch on, mirror on, fpu area 1088 B, tsc 3791992 kHz, TEST HOOK on
+INIT: running /tests/10-vsock
+RUN-TEST: running /run-vsock /vsocktest.image profile
+kernelet: PIE image loaded: 163840 bytes, 102400 shared, 61440 private per instance, 392 relative relocations
+kernelet: kind 0 "vsocktest" registered: an image of 157568 bytes, PIE text offsets [0x0, 0x10f55), 102400 bytes shared
+VSOCK-TEST: PROFILE-BEGIN transport=klet size=4096 rounds=4096 warmup=64
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=4160 port=1234 profile=1"
+kernelet: sandbox 0: vcpu 0 carrier (pid 37) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffa5e480085000, 0xffffa5e4800ad000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 113 cycles through the stack switch, 53 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff9f3d00000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=4160 port=1234 profile=1"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 862 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x90d000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=1 rounds=4096 bytes=33554432 wall_ns=103352608 cpu_ns=50507139 peer_cpu_ns=54206029 p50_ns=23965 p95_ns=31470 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 37) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 37) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+VSOCK-TEST: VSOCK-COPY tx=0 ops=4160 bytes=17039360 reserve_ns=55880458 copy_ns=1032194 commit_ns=1363881
+VSOCK-TEST: VSOCK-COPY tx=1 ops=4160 bytes=17039360 reserve_ns=1342067 copy_ns=907418 commit_ns=42581604
+kernelet: sandbox 0 destroyed
+kernelet: VSOCK-PROFILE lookups=16646 comparisons=2097404 lookup_ns=2005736 lock_ns=895051 waits=8319 slept=8319 skipped=0 wait_ns=112648468 retry_eagain=0 host_copy_ns=1823790 host_copy_bytes=34078720 poll_notifies=16640 mode=2
+kernelet: VSOCK-OP op=0 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=1 calls=1 step_ns=211 wakes=1
+kernelet: VSOCK-OP op=2 calls=1 step_ns=43 wakes=1
+kernelet: VSOCK-OP op=3 calls=1 step_ns=10584 wakes=1
+kernelet: VSOCK-OP op=4 calls=2 step_ns=283 wakes=1
+kernelet: VSOCK-OP op=5 calls=1 step_ns=42 wakes=1
+kernelet: VSOCK-OP op=6 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=7 calls=8320 step_ns=375557 wakes=0
+kernelet: VSOCK-OP op=8 calls=8320 step_ns=286551 wakes=8318
+kernelet: VSOCK-OP op=9 calls=16638 step_ns=824151 wakes=0
+kernelet: VSOCK-OP op=10 calls=8320 step_ns=213389 wakes=0
+VSOCK-TEST: PROFILE-BEGIN transport=api size=4096 rounds=4096 warmup=64
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=4096 loops=4160 port=1234 profile=1"
+kernelet: sandbox 0: vcpu 0 carrier (pid 38) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffa5e480085000, 0xffffa5e4800ad000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff9f3d00000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=4096 loops=4160 port=1234 profile=1"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 437 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9d8000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=4096 repeat=1 rounds=4096 bytes=33554432 wall_ns=99749593 cpu_ns=49399013 peer_cpu_ns=51034229 p50_ns=23617 p95_ns=28360 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 38) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 38) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+VSOCK-TEST: VSOCK-COPY tx=0 ops=4160 bytes=17039360 reserve_ns=55414779 copy_ns=680088 commit_ns=1468224
+VSOCK-TEST: VSOCK-COPY tx=1 ops=4160 bytes=17039360 reserve_ns=1322999 copy_ns=502128 commit_ns=41951923
+kernelet: sandbox 0 destroyed
+kernelet: VSOCK-PROFILE lookups=16646 comparisons=2097404 lookup_ns=1958533 lock_ns=870316 waits=8320 slept=8320 skipped=0 wait_ns=113021461 retry_eagain=0 host_copy_ns=1800410 host_copy_bytes=34078720 poll_notifies=16640 mode=2
+kernelet: VSOCK-OP op=0 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=1 calls=1 step_ns=232 wakes=1
+kernelet: VSOCK-OP op=2 calls=1 step_ns=27 wakes=1
+kernelet: VSOCK-OP op=3 calls=1 step_ns=12008 wakes=1
+kernelet: VSOCK-OP op=4 calls=2 step_ns=445 wakes=1
+kernelet: VSOCK-OP op=5 calls=1 step_ns=42 wakes=1
+kernelet: VSOCK-OP op=6 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=7 calls=8320 step_ns=370075 wakes=0
+kernelet: VSOCK-OP op=8 calls=8320 step_ns=256579 wakes=8319
+kernelet: VSOCK-OP op=9 calls=16639 step_ns=754761 wakes=0
+kernelet: VSOCK-OP op=10 calls=8320 step_ns=209963 wakes=0
+VSOCK-TEST: PROFILE-BEGIN transport=klet size=16384 rounds=4096 warmup=64
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=16384 loops=4160 port=1234 profile=1"
+kernelet: sandbox 0: vcpu 0 carrier (pid 39) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffa5e480085000, 0xffffa5e4800ad000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff9f3d00000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=16384 loops=4160 port=1234 profile=1"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 442 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9e9000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input3
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=1 rounds=4096 bytes=134217728 wall_ns=116232933 cpu_ns=55282843 peer_cpu_ns=59300339 p50_ns=26448 p95_ns=33642 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 39) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 39) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+VSOCK-TEST: VSOCK-COPY tx=0 ops=4160 bytes=68157440 reserve_ns=61090972 copy_ns=3253400 commit_ns=1379520
+VSOCK-TEST: VSOCK-COPY tx=1 ops=4160 bytes=68157440 reserve_ns=1330597 copy_ns=3516386 commit_ns=45834094
+kernelet: sandbox 0 destroyed
+kernelet: VSOCK-PROFILE lookups=16646 comparisons=2097404 lookup_ns=2006832 lock_ns=875561 waits=8320 slept=8320 skipped=0 wait_ns=129325020 retry_eagain=0 host_copy_ns=5380799 host_copy_bytes=136314880 poll_notifies=16640 mode=2
+kernelet: VSOCK-OP op=0 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=1 calls=1 step_ns=177 wakes=1
+kernelet: VSOCK-OP op=2 calls=1 step_ns=27 wakes=1
+kernelet: VSOCK-OP op=3 calls=1 step_ns=11250 wakes=1
+kernelet: VSOCK-OP op=4 calls=2 step_ns=434 wakes=1
+kernelet: VSOCK-OP op=5 calls=1 step_ns=42 wakes=1
+kernelet: VSOCK-OP op=6 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=7 calls=8320 step_ns=429464 wakes=0
+kernelet: VSOCK-OP op=8 calls=8320 step_ns=296494 wakes=8319
+kernelet: VSOCK-OP op=9 calls=16639 step_ns=805419 wakes=0
+kernelet: VSOCK-OP op=10 calls=8320 step_ns=240753 wakes=0
+VSOCK-TEST: PROFILE-BEGIN transport=api size=16384 rounds=4096 warmup=64
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=16384 loops=4160 port=1234 profile=1"
+kernelet: sandbox 0: vcpu 0 carrier (pid 40) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffa5e480085000, 0xffffa5e4800ad000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 113 cycles through the stack switch, 51 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff9f3d00000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=16384 loops=4160 port=1234 profile=1"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 858 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x8e3000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=16384 repeat=1 rounds=4096 bytes=134217728 wall_ns=109965432 cpu_ns=55597745 peer_cpu_ns=54753480 p50_ns=25956 p95_ns=31440 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 40) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 40) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (33584 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+VSOCK-TEST: VSOCK-COPY tx=0 ops=4160 bytes=68157440 reserve_ns=61877694 copy_ns=2144924 commit_ns=1460683
+VSOCK-TEST: VSOCK-COPY tx=1 ops=4160 bytes=68157440 reserve_ns=1292830 copy_ns=2581651 commit_ns=42202904
+kernelet: sandbox 0 destroyed
+kernelet: VSOCK-PROFILE lookups=16646 comparisons=2097404 lookup_ns=1931363 lock_ns=908441 waits=8320 slept=8320 skipped=0 wait_ns=120967555 retry_eagain=0 host_copy_ns=5318293 host_copy_bytes=136314880 poll_notifies=16640 mode=2
+kernelet: VSOCK-OP op=0 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=1 calls=1 step_ns=236 wakes=1
+kernelet: VSOCK-OP op=2 calls=1 step_ns=27 wakes=1
+kernelet: VSOCK-OP op=3 calls=1 step_ns=11056 wakes=1
+kernelet: VSOCK-OP op=4 calls=2 step_ns=308 wakes=1
+kernelet: VSOCK-OP op=5 calls=1 step_ns=42 wakes=1
+kernelet: VSOCK-OP op=6 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=7 calls=8320 step_ns=419516 wakes=0
+kernelet: VSOCK-OP op=8 calls=8320 step_ns=304278 wakes=8319
+kernelet: VSOCK-OP op=9 calls=16639 step_ns=796857 wakes=0
+kernelet: VSOCK-OP op=10 calls=8320 step_ns=269704 wakes=0
+VSOCK-TEST: PROFILE-BEGIN transport=klet size=65536 rounds=4096 warmup=64
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=65536 loops=4160 port=1234 profile=1"
+kernelet: sandbox 0: vcpu 0 carrier (pid 41) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffa5e480085000, 0xffffa5e4800ad000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff9f3d00000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=65536 loops=4160 port=1234 profile=1"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 441 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c3000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=1 rounds=4096 bytes=536870912 wall_ns=161778220 cpu_ns=81939690 peer_cpu_ns=80801625 p50_ns=36854 p95_ns=51468 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 41) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 41) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+VSOCK-TEST: VSOCK-COPY tx=0 ops=4160 bytes=272629760 reserve_ns=88830509 copy_ns=12181289 commit_ns=1433550
+VSOCK-TEST: VSOCK-COPY tx=1 ops=4160 bytes=272629760 reserve_ns=1409121 copy_ns=14303457 commit_ns=44269658
+kernelet: sandbox 0 destroyed
+kernelet: VSOCK-PROFILE lookups=16646 comparisons=2097404 lookup_ns=2034695 lock_ns=1035518 waits=8321 slept=8321 skipped=0 wait_ns=177761742 retry_eagain=1 host_copy_ns=21004717 host_copy_bytes=545259520 poll_notifies=16640 mode=2
+kernelet: VSOCK-OP op=0 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=1 calls=1 step_ns=181 wakes=1
+kernelet: VSOCK-OP op=2 calls=1 step_ns=25 wakes=1
+kernelet: VSOCK-OP op=3 calls=1 step_ns=11491 wakes=1
+kernelet: VSOCK-OP op=4 calls=2 step_ns=358 wakes=1
+kernelet: VSOCK-OP op=5 calls=1 step_ns=41 wakes=1
+kernelet: VSOCK-OP op=6 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=7 calls=8320 step_ns=401677 wakes=0
+kernelet: VSOCK-OP op=8 calls=8320 step_ns=296034 wakes=8319
+kernelet: VSOCK-OP op=9 calls=16640 step_ns=828337 wakes=0
+kernelet: VSOCK-OP op=10 calls=8320 step_ns=262578 wakes=0
+VSOCK-TEST: PROFILE-BEGIN transport=api size=65536 rounds=4096 warmup=64
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=65536 loops=4160 port=1234 profile=1"
+kernelet: sandbox 0: vcpu 0 carrier (pid 42) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffa5e480085000, 0xffffa5e4800ad000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff9f3d00000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=65536 loops=4160 port=1234 profile=1"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 438 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9ee000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=65536 repeat=1 rounds=4096 bytes=536870912 wall_ns=149727111 cpu_ns=78031107 peer_cpu_ns=71996719 p50_ns=34875 p95_ns=48640 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 42) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 42) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (131888 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+VSOCK-TEST: VSOCK-COPY tx=0 ops=4160 bytes=272629760 reserve_ns=85266764 copy_ns=8869931 commit_ns=1580861
+VSOCK-TEST: VSOCK-COPY tx=1 ops=4160 bytes=272629760 reserve_ns=1296432 copy_ns=10694686 commit_ns=44179721
+kernelet: sandbox 0 destroyed
+kernelet: VSOCK-PROFILE lookups=16646 comparisons=2097404 lookup_ns=2020371 lock_ns=952087 waits=8321 slept=8321 skipped=0 wait_ns=164676134 retry_eagain=1 host_copy_ns=20632050 host_copy_bytes=545259520 poll_notifies=16640 mode=2
+kernelet: VSOCK-OP op=0 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=1 calls=1 step_ns=180 wakes=1
+kernelet: VSOCK-OP op=2 calls=1 step_ns=26 wakes=1
+kernelet: VSOCK-OP op=3 calls=1 step_ns=10589 wakes=1
+kernelet: VSOCK-OP op=4 calls=2 step_ns=394 wakes=1
+kernelet: VSOCK-OP op=5 calls=1 step_ns=44 wakes=1
+kernelet: VSOCK-OP op=6 calls=0 step_ns=0 wakes=0
+kernelet: VSOCK-OP op=7 calls=8320 step_ns=400017 wakes=0
+kernelet: VSOCK-OP op=8 calls=8320 step_ns=303447 wakes=8319
+kernelet: VSOCK-OP op=9 calls=16640 step_ns=859933 wakes=0
+kernelet: VSOCK-OP op=10 calls=8320 step_ns=293155 wakes=0
+kernelet: kind 0 "vsocktest" unregistered
+VSOCK-TEST: PASS lifecycle, rings, backpressure, peer death, survivors, end-to-end measurements
+RUN-TEST: /run-vsock /vsocktest.image profile exited 0
+RUN-TEST: done
+INIT: /tests/10-vsock exited 0
+INIT: unloading endovisor
+kernelet: VSOCK: 0 endpoints live, 0 connections live, 49921 waits, 1431306240 bytes published, notification_mode=2
+kernelet: eviction: 227 sweep(s), 0 eviction(s)
+kernelet: watch timer: 384 tick(s), 18 upcall(s), 0 voluntary yield(s)
+kernelet: kicks: 0 IPI(s), 0 requested firing(s): 0 delivered an upcall, 0 found user mode or a service, 0 a critical section
+kernelet: STATS sandboxes=6 deferrals=0 longest_defer_us=0 longest_tick_gap_us=3030 forced_yields=0 bad_preempt=0 on_spin=0 yield_to=0 mm_switch=3 fpu_swap=0 fpu_reject=0 mirror_fault=0 stolen_ms=0 kstacks=12
+kernelet: MEMSTATS faults=0 mkwrites=0 reported=0 kernel_faults=0 maps=108 unmaps=0 unmapped=0 protects=0 protected=0 flushes=0 flush_alls=0 waits=0 wait_sleeps=0 wakes=0 spaces=6
+kernelet: kills: 0 found in a service, 0 in kernelet code by the watch timer
+kernelet: heap: 42066 blocks allocated, 42015 freed by the kernelet, 51 freed at teardown, 0 live
+kernelet: kernelet stacks: 12 made, 12 returned, 0 live
+kernelet: carrier records: 6 made, 6 freed, 0 live
+kernelet: endovisor unloaded
+INIT: done
+ACPI: PM: Preparing to enter system sleep state S5
+reboot: Power down

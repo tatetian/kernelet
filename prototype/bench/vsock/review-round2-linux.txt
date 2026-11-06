@@ -1,0 +1,107 @@
+Round 2 independent adversarial review: Linux integration, synchronization,
+notification, teardown, lifecycle, resource bounds, and carrier contracts.
+Branch inspected: design/klet-vsock (working-tree experiment).
+
+Scope and method:
+Read AGENTS.md and tmp-klet-vsock-prompt.md, then inspected the Linux broker,
+carrier/sandbox/service integration, UAPI, vOSTD adapter, host runtime and test
+kernel, proposal, and recorded evidence. No implementation edits, builds, or
+QEMU runs were made. The inspected vsock.c, run-vsock.c, and UAPI SHA-256 hashes
+match results.txt. Runtime conclusions below refer to the recorded integrated
+run, not a new independent execution.
+
+Verdict: NO REMAINING BLOCKING OBJECTION in the Linux integration scope.
+The two Round 1 Linux findings are resolved in source. The declared prototype
+limitations do not establish infeasibility or violate the bounded experiment's
+scope. This verdict does not constitute design acceptance or validate the
+planned task-level readiness mechanism.
+
+L1 resolution: EOF now follows an admitted producer reservation.
+Locations: prototype/linux/endovisor/vsock.c:244-249, :331-338, :344-360,
+:527-529; prototype/host/runtime/run-vsock.c:400-445;
+prototype/kernels/vsock/tenant.S:104-112.
+
+SHUT_WR prevents new producer reservations immediately. An empty receive ring
+returns EAGAIN while a live peer has closed writes but still owns a TX lease;
+commit or cancellation clears that lease and wakes waiters. Poll uses the same
+lease-qualified send-closure condition. Therefore a writer admitted before
+shutdown cannot publish after its peer has observed EOF from that shutdown.
+Normal host close cannot free an endpoint under an in-flight file operation,
+and safe vOSTD ownership serializes close against its own data operations.
+The new role-6 receiver checks that EOF follows the complete admitted payload
+before echoing it. results.txt records this test passing.
+
+L2 resolution: storage bound has an independent connection limit.
+Locations: prototype/linux/endovisor/vsock.c:127-140, :303-319;
+prototype/linux/endovisor/uapi/klet-vsock.h:15;
+book/src/design-proposals/2026-11-06-kernelet-vsock.md:194-204.
+
+Connection setup checks the count under kv_lock before allocating, increments
+only on successful connection installation, and decrements only on final-peer
+reclamation. The invariant holds even when only one endpoint of each connection
+remains. The proposal now separately states the 8 MiB payload bound and the
+larger allocator-rounded connection-storage bound. This is no longer inferred
+incorrectly from the endpoint count. A retained-single-endpoint exhaustion test
+would strengthen regression coverage, but the limit follows directly from the
+short serialized create/drop paths; no remaining bound defect was found.
+
+Other contract checks:
+- Listener data operations return ENOTCONN; accept returns a separate endpoint.
+  Backlog occupancy includes pending accepted endpoints. Listener close drops
+  those endpoints and wakes backlog-blocked connectors; death prevents a new
+  connection before deferred physical cleanup completes.
+- kv_request snapshots generation while holding kv_lock, releases the lock
+  before waiting, and rechecks on every retry. Success, commit, shutdown, close,
+  and kill notify waiters. This closes the metadata-unlock-to-wait lost-wakeup
+  window. Ordinary consumption waking a full-ring writer now has a controlled
+  consumption-gate test, in addition to the death-wakeup tests.
+- One outstanding producer and consumer reservation per ring prevents reuse
+  of bytes before consumption and observation before publication. Payload
+  copies occur outside kv_lock; metadata unlock/lock orders publication.
+- Host operations retain their file reference. Image endpoints retain their
+  owner, and their active carrier prevents klet_vsock_gone from running while
+  the image could still touch a reserved span. Kill marks dying and wakes
+  waiters before physical endpoint reclamation. Surviving endpoints retain the
+  independent connection allocation. Reaping drops dead endpoints without
+  running image destructors or waiting for peer acknowledgement.
+- The host-side delayed producer can complete its admitted copy after its
+  receiving sandbox is reaped; this is safe because its own endpoint retains
+  the rings. Subsequent reads report reset. This test exercises retention
+  across receiver destruction rather than abandonment of a killed sender's
+  own producer reservation.
+- Parking an entire carrier, use of a global broker mutex/wait queue, fixed
+  permissions without revocation, missing accepted-peer address queries, and
+  creator-context accounting are documented limitations. The proposal
+  distinguishes the implemented carrier wait from planned task-level event
+  delivery and does not claim measured virtual-interrupt improvements.
+
+Nonblocking validation notes and precise remaining limits:
+
+N1. The new admitted-write race test is controlled but not fully deterministic.
+Locations: prototype/linux/endovisor/vsock.c:487-488;
+prototype/host/runtime/run-vsock.c:409, :417-429;
+prototype/bench/vsock/reviews.txt:10.
+
+Polling until POLLOUT disappears establishes an active TX reservation at the
+instant observed, but its fixed 300 ms sleep can expire before the main thread
+actually executes shutdown or kill under an arbitrary scheduling pause. A run
+can therefore pass without the intended overlap. This does not invalidate the
+source-level EOF fix, and the recorded normal run remains useful evidence.
+Avoid calling the test strictly deterministic, or replace the timer with a
+bounded reserve/release handshake and confirm shutdown occurs before release.
+
+N2. The kill test still does not evict the image that itself owns a reserved
+copy. Locations: prototype/host/runtime/run-vsock.c:401-435;
+book/src/design-proposals/2026-11-06-kernelet-vsock.md:320.
+
+The delayed writer is a host thread, so killing its receiving sandbox tests
+survivor-span retention. Existing killed reader/writer/connect tests test
+waiting and recovery. None forces a producer or consumer reservation held by
+the killed image to be abandoned mid-copy. The proposal explicitly lists that
+fault injection as future validation, and the lifetime argument is consistent
+with the existing all-carriers-gone teardown contract. Do not describe the
+current suite as independently exercising reserved-image-copy eviction. A
+future targeted test should stop the image after reserve, kill it, confirm the
+survivor gets reset after committed bytes drain, and verify final reclamation.
+
+No concrete additional correctness failure was established in this round.

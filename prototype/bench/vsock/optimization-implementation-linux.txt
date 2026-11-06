@@ -1,0 +1,175 @@
+Post-implementation independent review: Linux notifications and lifecycle
+Date: 2026-11-06
+Verdict: NO SOURCE CORRECTNESS BLOCKER FOUND for modes 0, 1, or 2.
+
+The implementation satisfies the mandatory notification, ordering, poll,
+terminal, and lifetime conditions in optimization-design-linux.txt. All three
+available completed correctness logs pass the existing checker. This is a
+Linux correctness review, not evidence of performance improvement or a default
+selection. The source default is still 0; changing it requires the separate
+matched performance/evidence decision. Coverage limitations below must remain
+visible when describing the tests.
+
+Method and inspected state
+
+Read the implemented broker, UAPI, host runtime tests/checker, test-image roles,
+and the unchanged kill/teardown integration. Inspected completed validation
+logs and ran only the read-only log checker. No implementation edits, build,
+or QEMU execution were performed by this reviewer. Only this report was added.
+
+SHA-256 at inspection:
+vsock.c: bdb7567cad8ff746ed914a5f71d3bb7e7300407217c6799d4e1b7f7acc79d449
+run-vsock.c: e6bc46e1f6b937a78ace4bb21ffb40010f4524726efc6016b92c38b6839373bc
+check-vsock.py: 2bfea37920563f76a35f0f45a8c0194b3f8f86dde79b0baf2488869931c73f37
+uapi/klet-vsock.h: 4ed3491cf9c3b9150cce49dc070a29fe7741cdec55b6ba6331d5b476957ba444
+
+Ordering and demand registration: PASS.
+
+kv_data_ring maps TX to side and RX to side^1 consistently in reserve, commit,
+demand registration, and successful-commit notification. A data EAGAIN implies
+that the endpoint already has a connection. Connect/accept waits leave demand
+NULL and cannot dereference an unconnected endpoint to register ring demand.
+
+kv_request holds kv_lock while snapshotting atomic generation, checking the
+operation, and incrementing the appropriate consumer/producer counter. The
+counter is nonzero before mutex_unlock, covering the unlock-to-wait interval.
+wait_event_interruptible retains its generation/own-death predicate. Every
+return from that wait reacquires kv_lock and decrements the saved counter
+before retry or exit, including signal and owner-death paths. The defensive
+underflow warning reports EIO rather than silently wrapping a counter.
+
+kv_notify_success is called under kv_lock after successful kv_step in both
+kv_request and the distinct host kv_io commit path. In mode 2 it checks BOTH
+counts on that commit's ring, atomically changes generation, and broadcasts
+kv_wait whenever either is nonzero. There is no empty/full heuristic or
+waitqueue_active optimization. A committer cannot interleave with registration
+under kv_lock, and a commit before wait-queue insertion changes the generation
+tested before sleeping. The original lost-wakeup proof therefore applies.
+
+Reservation suppression and zero prefixes: PASS.
+
+Mode 1 and mode 2 suppress only successful RESERVE_TX/RESERVE_RX notification.
+These operations establish leases or return without changing availability;
+they do not make another request newly ready. Every successful commit clears
+its lease before notification. Neither helper nor host commit path tests the
+prefix for nonzero, so COMMIT_TX(0) and COMMIT_RX(0) retain their required
+lease-release notifications. Rejected commits need not notify unchanged state.
+Mode 0 retains broad notification after successful reserves and commits.
+
+Poll and epoll: PASS.
+
+kv_poll chooses kv_poll_wait only in mode 2 and registers with poll_wait before
+checking metadata under kv_lock. kv_poll_wait is static module storage. Every
+successful data commit in mode 2 unconditionally wakes that queue, regardless
+of registered blocking demand. Other modes register poll on kv_wait and keep
+their broad commit notifications. The mode is a load-time 0..2 parameter with
+0444 permissions, so established subscriptions cannot move between queues at
+runtime. The masks and lease-qualified EOF predicate remain unchanged.
+
+Global terminal/control notification: PASS.
+
+klet_vsock_wake always atomically increments generation and wakes kv_wait;
+in mode 2 it additionally wakes the separate static poll queue. In modes 0/1
+there are no subscribers on that second queue, so skipping it is equivalent to
+waking all relevant subscribers. The helper takes no mutex, allocates nothing,
+does not inspect endpoint/ring lists or demand counters, and remains usable
+from the atomic-context kill path. klet_end publishes dying before calling
+klet_kill_carriers, which invokes the broad helper.
+
+Successful shutdown, connect, accept/backlog release and other control steps
+fall through kv_notify_success to the broad helper. kv_drop still broadcasts
+for ordinary close, pending-listener cancellation, and all-carriers-gone
+reaping. Thus host waiters whose own endpoint is not dying still retry after
+peer death through changed generation. No new lock acquisition was introduced
+into kill and no control notification was narrowed to ring demand.
+
+Half-close and lifetime: PASS.
+
+The existing kv_reserve rule defers empty-ring EOF while a live write-closed
+peer retains its TX lease. New producers remain disallowed after SHUT_WR;
+already admitted producers may commit normally. Both counter tests on a TX
+commit include RX waiters awaiting that lease's resolution, including the
+zero-prefix case. Poll retains the corresponding TX-lease EOF guard. Buffered
+data still drains before peer-reset error or EOF as previously implemented.
+
+No host file, module, active image carrier, or connection retention contract
+was weakened. Payload copying remains outside kv_lock. A retained endpoint
+keeps the connection and saved demand pointer alive through wait/relock, even
+after its peer is dropped. Safe image ownership still serializes close against
+its own operations; image handles are physically reaped only after carriers
+are gone. Final connection release now also warns if any demand remains.
+The new test-only wait-counter ioctl copies counters under kv_lock, exposes no
+pointer, and requires klet_test_hooks; bounded TX/RX delay hooks use the same
+gate. Their default values do not introduce production sleeps.
+
+Diagnostic policy: PASS, with interpretation constraint.
+
+Suppressed reserves do not increment per-op wakes. Mode-2 data commits count
+blocking broadcasts only when demand exists and separately count unconditional
+data poll notifications. Other successful operations retain broad per-op wake
+counts. poll_notifies is therefore a count of mode-2 data notifications, not
+all terminal/control invocations and not the number of subscribed tasks or
+actual scheduler wakeups. Keep that meaning in profiling analysis.
+
+Observed validation evidence
+
+At inspection all three files were complete:
+prototype/.build/vsock-validation-0.txt
+prototype/.build/vsock-validation-1.txt
+prototype/.build/vsock-validation-2.txt
+
+Ran python3 prototype/tools/check-vsock.py separately against each file; all
+three exited 0. Each contains the new TX/RX normal and zero lease-contention
+markers, zero-TX FIN, isolated zero-cancellation epoll restoration, interrupted
+reader/writer, poll/level-epoll/edge-epoll publication, capacity-release epoll,
+owner-kill unregister, backlog-release, and independent-ring stress markers.
+Each also retains the earlier lifecycle/fault/kill/half-close suite markers,
+the suite PASS, 0 endpoints and connections, endovisor unload, and INIT done.
+The checker rejects kernel warnings/BUG/Oops/panics and explicit test failure.
+The broker's final line identifies the expected notification_mode in each log.
+
+Log SHA-256:
+mode 0: 66459c539a6cc60694969d9bfe7aa1cccf195463423043de7801f8ea757b2bdf
+mode 1: d494abc425bd9eedd378cf43f2e9e0ab53846eda86638cae3dd22e1425e2fb9b
+mode 2: 87153e6a5e30009340bf6e33e6d1cb24dbe4d54dbb9fb143798c7de878deacb4
+
+Coverage limitations; no concrete implementation defect established
+
+1. The new wait_demand ioctl observes actual registered same-direction demand,
+   a substantial improvement over assuming that a started thread is blocked.
+   Lease ownership still uses a 300 ms delay and readiness observations rather
+   than an explicit release handshake. Adversarial scheduling can move a later
+   action outside that window. Isolated cancellation epoll registration can
+   also occur after cancellation under a long scheduling pause. These tests
+   exercise the intended overlap in ordinary runs, not deterministically under
+   all schedules. Keep the existing delayed-write caveat.
+
+2. registration_stress exercises two connections and 256 checked round trips
+   per connection, with time-bounded joins. Its two caller threads inherit the
+   main thread's CPU1 affinity and each connection has one caller thread. The
+   image peer executes separately, but this is not repeated adversarial
+   multi-caller-CPU or multiple-competing-waiter stress on a single ring. The
+   separate lease cases cover two same-endpoint operations once per case.
+   Stronger stress remains useful follow-up to design-report item G; it is not
+   a source-correctness blocker given the checked locking/generation protocol.
+
+3. The interrupted-writer case verifies later communication. The interrupted
+   reader case verifies balanced counters and subsequent kill/reclamation,
+   rather than a new successful read on that same live connection. The peer
+   kill/epoll test does verify owner-wait unregister and final peer reset.
+   The backlog case verifies accept releasing a connector; listener kill is
+   covered by the earlier full-backlog peer-kill test. A separate listener
+   close or blocked-accept interruption case would broaden coverage.
+
+4. Capacity-release epoll tests a full ring; wrapped partial transfers remain
+   in the existing functional test, rather than a dedicated wrapped epoll
+   capacity test. EOF poll checks and zero-prefix EOF are covered separately
+   from epoll lease-restoration. These combinations are not exhaustive.
+
+5. No test here kills an image during its own reserved payload copy. The prior
+   all-carriers-gone lifetime argument and admitted host-copy peer-death test
+   remain the basis for that unchanged contract. No new proof is claimed.
+
+The completed all-mode logs resolve the outstanding runtime-validation status
+at the time this review was requested. Their routine 27-measurement summaries
+are not the planned matched virtio-vsock before/after performance evidence.

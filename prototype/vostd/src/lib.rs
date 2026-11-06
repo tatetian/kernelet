@@ -42,6 +42,7 @@ pub mod task;
 pub mod time;
 pub mod timer;
 pub mod user;
+pub mod vsock;
 pub(crate) mod utils;
 pub(crate) mod vcpu;
 

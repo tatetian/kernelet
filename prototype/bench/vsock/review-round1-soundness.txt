@@ -1,0 +1,151 @@
+Round 1 adversarial review: Rust soundness, ownership, and isolation
+Date: 2026-11-06
+Branch: design/klet-vsock
+Reviewer scope: working-tree implementation and proposal; independent source review.
+
+Disposition
+===========
+No blocking Rust-soundness, dangling-reference, out-of-bounds, publication, or
+forced-teardown defect was established. The shared-storage idea is feasible
+within the repository's safe-kernel/trusted-vOSTD model. There is one concrete
+resource-bound documentation error to correct before presenting the resource
+analysis as accurate. The implementation remains a deliberately limited
+prototype; the limitations below are not evidence of infeasibility.
+
+Finding S1: incorrect worst-case live payload-storage bound
+Severity: medium; documentation/resource-accounting correctness; not a Rust
+soundness blocker.
+Location: book/src/design-proposals/2026-11-06-kernelet-vsock.md:181.
+Relevant implementation: prototype/linux/endovisor/vsock.c:124-138, 295-309.
+
+The proposal derives an 8-MiB payload bound from 128 endpoints and two 64-KiB
+rings per connection. That derivation assumes two endpoints remain live for
+every live connection. kv_drop deliberately retains a connection when only
+one endpoint remains, so the assumption is false.
+
+Counterexample: establish a connection, retain one endpoint, and close the
+other endpoint. Repeat using different owner slots as necessary to respect
+the per-owner limit. Every retained endpoint keeps its own distinct pair of
+rings alive, while the closed peer no longer occupies an endpoint slot.
+With 127 retained endpoints, the remaining slot can no longer establish a
+new connection requiring a second endpoint, but 127 distinct retained
+connections are already reachable (approximately 15.875 MiB of payload).
+An unconditional conservative bound is 128 * 2 * 65536 = 16 MiB, plus
+metadata. The exact reachable maximum can depend on allocation sequencing;
+8 MiB is not a valid upper bound.
+
+Necessary fix: state a conservative 16-MiB bound, or enforce and describe an
+independent live-connection limit that actually establishes the 8-MiB bound.
+An independent limit is unnecessary for this prototype if the larger finite
+bound is acceptable.
+
+Checked ownership and publication arguments
+==========================================
+1. Safe callers cannot manufacture handles or exposed ring pointers.
+   Socket and RingBuffer fields are private (vostd/src/vsock.rs:62-65,
+   151-154), and the request's address fields are private (34-41). The service
+   pointer is unsafe to call. Public Request::default() does not itself grant
+   safe callers a route around the wrapper.
+
+2. A safe operation exclusively borrows RingBuffer. Socket and RingBuffer
+   are explicitly !Sync (67, 156), cannot be safely cloned, and neither copy
+   method returns the temporary reader/writer into the ring. Moving a Socket
+   between kernelet tasks preserves its unique handle ownership. Access is
+   serialized even if safe application code puts the Socket in a mutex.
+
+3. On reserve, the broker checks connection state, free/committed bytes,
+   physical wrap, and the same-direction lease under kv_lock
+   (vsock.c:216-248). A producer lease is outside the committed interval;
+   a consumer lease remains within that interval until commit. A second
+   producer or consumer cannot obtain the same-direction reservation.
+   Consumption can free bytes while a producer is copying, but cannot make
+   its already reserved free interval overlap the consumer's committed
+   interval. Publication can add bytes while a consumer copies, but cannot
+   reuse bytes still preceding its uncommitted head. Unsigned counter
+   subtraction and the power-of-two capacity preserve these intervals across
+   counter rollover, assuming the maintained capacity bound.
+
+4. Commit bounds the published/consumed prefix by the active lease and clears
+   that lease (vsock.c:334-350). Payload copies occur before the publishing
+   lock/unlock; a peer locks before inspecting the published indexes. The
+   service calls and existing opaque copy routine are compiler-visible memory
+   effects. Partial tenant faults commit only the completed prefix, including
+   a zero-byte commit that cancels a nonempty lease
+   (vostd/src/vsock.rs:183-231). No intermediate transport payload buffer is
+   present on this inspected path.
+
+5. A normal peer close detaches its endpoint, but leaves both rings alive
+   while the survivor exists (vsock.c:124-138). Host file references pin the
+   host endpoint during file operations. Safe vOSTD's mutable borrow prevents
+   its Socket destructor from concurrently closing an active local operation.
+   The unsafe VmReader/VmWriter constructors at vsock.rs:195 and 220 are
+   therefore supported by the reservation and endpoint lifetime arguments.
+
+6. Forced death first marks the owner dying and wakes waiters
+   (sandbox.c:547-558; carrier.c:1040-1043). Socket reaping is called from
+   klet_sandbox_gone only after the last carrier is gone
+   (sandbox.c:509-515, 566-571; carrier.c:304-310). An in-flight image copy
+   can be abandoned without running its Rust destructor; no image carrier
+   can subsequently access the span when its endpoint is reaped. The survivor
+   independently retains storage. Its read path can drain committed bytes
+   and then observe reset without waiting for the dead producer's lease.
+   Its write path checks dead/absent peer before claiming additional bytes.
+
+7. Pending accepted endpoints belong to the listener and count toward owner
+   limits. The first teardown pass drops pending endpoints and clears their
+   parent lists before the general endpoint sweep (vsock.c:149-169), avoiding
+   stale pending pointers or double frees during owner teardown. The broker's
+   owner reference pins the klet_inst used by kv_dead while host operations
+   inspect it; descriptor/carrier references cover the teardown caller itself.
+
+8. The new service uses the existing host-stack service prologue/epilogue
+   (carrier.c:1858-1887, 1988-1991). Host metadata locks are released before
+   returning a ring span into image code. The vOSTD wrapper checks the existing
+   sleeping rule before every service, including Drop
+   (vsock.rs:50-54, 139-142). Misuse under a spin lock/disabled virtual
+   interrupts panics the sandbox rather than creating an unchecked sleeping
+   critical section.
+
+Explicit limitations and follow-up observations
+==============================================
+- Killing a carrier during an actual reserved payload copy is reasoned about
+  above but not directly exercised by the supplied evidence. The proposal
+  explicitly lists deterministic reservation-abandonment/rollover injection
+  as follow-up (line 287). Existing blocked-reader/writer/connect kill tests
+  should not be described as directly testing that narrower timing window.
+  This is a validation limitation, not an observed lifetime bug.
+
+- The safe vOSTD API serializes both directions through one &mut RingBuffer,
+  so it does not currently permit a blocking read and blocking write on the
+  same kernelet endpoint to proceed concurrently. Nonblocking interleaving is
+  possible. Carrier-wide parking and concurrent shared-socket integration are
+  already acknowledged limitations (proposal:165, 281); preserve that scope
+  and avoid suggesting the experiment validates a production task-level
+  full-duplex scheduling API. The host file operations do support independent
+  transmit and receive leases.
+
+- Source identities are authenticated by the broker and checked by policy,
+  but neither accept wrapper returns a peer identity or offers a peer-query
+  operation. A server authorizing multiple peers cannot discover which peer
+  produced an accepted stream using this API alone. This does not defeat the
+  pairwise permission checks or expose memory. It merits explicit prototype
+  scope wording and a peer-identity query in a production socket API.
+
+- mem::forget(Socket) leaks a bounded owner handle until sandbox teardown;
+  permission entries are bounded and do not compact dead peers. These facts
+  are explicitly disclosed (proposal:177, 185). They are availability/resource
+  limitations, not unbounded allocation or cross-image reference leaks.
+
+- Proposal performance table values do not match the supplied results.txt
+  summary/raw data at this review snapshot. This was forwarded to the main
+  agent for the separate evidence review; no performance conclusion was used
+  to infer memory safety.
+
+Validation performed
+====================
+Read AGENTS.md and the full requested task. Inspected the changed/untracked
+vOSTD API, C broker/UAPI, ABI additions, carrier and sandbox changes, test
+kernel, proposal, existing VM copy implementation, sleeping-rule check, and
+recorded results. No implementation files were edited. No QEMU run, shared
+build, or new executable test was performed in this review. This is a source
+review and analysis, not a fresh execution certificate.

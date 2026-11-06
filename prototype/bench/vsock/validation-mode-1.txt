@@ -1,0 +1,1231 @@
+c[?7l[2J[0mSeaBIOS (version rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org)
+
+
+iPXE (http://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1EFD1B90+1EF31B90 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from ROM...
+c[?7l[2JLinux version 6.12.0 (root@tian-dev) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #24 SMP PREEMPT_DYNAMIC Fri Nov  6 04:34:26 UTC 2026
+Command line: console=ttyS0 panic=-1
+BIOS-provided physical RAM map:
+BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
+BIOS-e820: [mem 0x0000000000100000-0x000000001ffdffff] usable
+BIOS-e820: [mem 0x000000001ffe0000-0x000000001fffffff] reserved
+BIOS-e820: [mem 0x00000000feffc000-0x00000000feffffff] reserved
+BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+NX (Execute Disable) protection: active
+APIC: Static calls initialized
+Hypervisor detected: KVM
+kvm-clock: Using msrs 4b564d01 and 4b564d00
+kvm-clock: using sched offset of 301599065 cycles
+clocksource: kvm-clock: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
+tsc: Detected 3791.992 MHz processor
+last_pfn = 0x1ffe0 max_arch_pfn = 0x400000000
+x86/PAT: PAT support disabled because CONFIG_X86_PAT is disabled in the kernel.
+x86/PAT: Configuration [0-7]: WB  WT  UC- UC  WB  WT  UC- UC  
+found SMP MP-table at [mem 0x000f54c0-0x000f54cf]
+Using GB pages for direct mapping
+RAMDISK: [mem 0x1fdaa000-0x1ffdffff]
+ACPI: Early table checksum verification disabled
+ACPI: RSDP 0x00000000000F52E0 000014 (v00 BOCHS )
+ACPI: RSDT 0x000000001FFE2390 000034 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: FACP 0x000000001FFE223C 000074 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: DSDT 0x000000001FFE0040 0021FC (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: FACS 0x000000001FFE0000 000040
+ACPI: APIC 0x000000001FFE22B0 000080 (v03 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: HPET 0x000000001FFE2330 000038 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: WAET 0x000000001FFE2368 000028 (v01 BOCHS  BXPC     00000001 BXPC 00000001)
+ACPI: Reserving FACP table memory at [mem 0x1ffe223c-0x1ffe22af]
+ACPI: Reserving DSDT table memory at [mem 0x1ffe0040-0x1ffe223b]
+ACPI: Reserving FACS table memory at [mem 0x1ffe0000-0x1ffe003f]
+ACPI: Reserving APIC table memory at [mem 0x1ffe22b0-0x1ffe232f]
+ACPI: Reserving HPET table memory at [mem 0x1ffe2330-0x1ffe2367]
+ACPI: Reserving WAET table memory at [mem 0x1ffe2368-0x1ffe238f]
+Zone ranges:
+  DMA32    [mem 0x0000000000001000-0x000000001ffdffff]
+  Normal   empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000000001000-0x000000000009efff]
+  node   0: [mem 0x0000000000100000-0x000000001ffdffff]
+Initmem setup node 0 [mem 0x0000000000001000-0x000000001ffdffff]
+On node 0, zone DMA32: 1 pages in unavailable ranges
+On node 0, zone DMA32: 97 pages in unavailable ranges
+On node 0, zone DMA32: 32 pages in unavailable ranges
+ACPI: PM-Timer IO Port: 0x608
+ACPI: LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+IOAPIC[0]: apic_id 0, version 17, address 0xfec00000, GSI 0-23
+ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
+ACPI: INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
+ACPI: Using ACPI (MADT) for SMP configuration information
+ACPI: HPET id: 0x8086a201 base: 0xfed00000
+TSC deadline timer available
+CPU topo: Max. logical packages:   1
+CPU topo: Max. logical dies:       1
+CPU topo: Max. dies per package:   1
+CPU topo: Max. threads per core:   1
+CPU topo: Num. cores per package:     2
+CPU topo: Num. threads per package:   2
+CPU topo: Allowing 2 present CPUs plus 0 hotplug CPUs
+kvm-guest: APIC: eoi() replaced with kvm_guest_apic_eoi_write()
+kvm-guest: KVM setup pv remote TLB flush
+kvm-guest: setup PV sched yield
+[mem 0x20000000-0xfeffbfff] available for PCI devices
+Booting paravirtualized kernel on KVM
+clocksource: refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
+setup_percpu: NR_CPUS:8 nr_cpumask_bits:2 nr_cpu_ids:2 nr_node_ids:1
+percpu: Embedded 43 pages/cpu s138688 r8192 d29248 u1048576
+Kernel command line: console=ttyS0 panic=-1
+random: crng init done
+Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+Built 1 zonelists, mobility grouping on.  Total pages: 130942
+mem auto-init: stack:off, heap alloc:off, heap free:off
+SLUB: HWalign=64, Order=0-1, MinObjects=0, CPUs=2, Nodes=1
+Dynamic Preempt: full
+rcu: Preemptible hierarchical RCU implementation.
+rcu: 	RCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=2.
+rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
+NR_IRQS: 4352, nr_irqs: 440, preallocated irqs: 16
+rcu: srcu_init: Setting srcu_struct sizes based on contention.
+Console: colour VGA+ 80x25
+printk: legacy console [ttyS0] enabled
+ACPI: Core revision 20240827
+clocksource: hpet: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604467 ns
+APIC: Switch to symmetric I/O mode setup
+kvm-guest: APIC: send_IPI_mask() replaced with kvm_send_ipi_mask()
+kvm-guest: APIC: send_IPI_mask_allbutself() replaced with kvm_send_ipi_mask_allbutself()
+kvm-guest: setup PV IPIs
+..TIMER: vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
+clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x6d519938aa3, max_idle_ns: 881591130365 ns
+Calibrating delay loop (skipped) preset value.. 7583.98 BogoMIPS (lpj=15167968)
+Last level iTLB entries: 4KB 0, 2MB 0, 4MB 0
+Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0
+Spectre V2 : User space: Vulnerable
+Speculative Store Bypass: Vulnerable
+SRBDS: Unknown: Dependent on hypervisor status
+x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+x86/fpu: Supporting XSAVE feature 0x008: 'MPX bounds registers'
+x86/fpu: Supporting XSAVE feature 0x010: 'MPX CSR'
+x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+x86/fpu: xstate_offset[3]:  832, xstate_sizes[3]:   64
+x86/fpu: xstate_offset[4]:  896, xstate_sizes[4]:   64
+x86/fpu: Enabled xstate features 0x1f, context size is 960 bytes, using 'compacted' format.
+Freeing SMP alternatives memory: 12K
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+smpboot: CPU0: Intel(R) Xeon(R) CPU E3-1270 v6 @ 3.80GHz (family: 0x6, model: 0x9e, stepping: 0x9)
+Performance Events: Skylake events, full-width counters, Intel PMU driver.
+... version:                2
+... bit width:              48
+... generic registers:      4
+... value mask:             0000ffffffffffff
+... max period:             00007fffffffffff
+... fixed-purpose events:   3
+... event mask:             000000070000000f
+signal: max sigframe size: 1616
+rcu: Hierarchical SRCU implementation.
+rcu: 	Max phase no-delay instances is 1000.
+smp: Bringing up secondary CPUs ...
+smpboot: x86: Booting SMP configuration:
+.... node  #0, CPUs:      #1
+smp: Brought up 1 node, 2 CPUs
+smpboot: Total of 2 processors activated (15167.96 BogoMIPS)
+Memory: 499880K/523768K available (6144K kernel code, 841K rwdata, 1656K rodata, 764K init, 384K bss, 22524K reserved, 0K cma-reserved)
+devtmpfs: initialized
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+NET: Registered PF_NETLINK/PF_ROUTE protocol family
+thermal_sys: Registered thermal governor 'step_wise'
+thermal_sys: Registered thermal governor 'user_space'
+cpuidle: using governor ladder
+PCI: Using configuration type 1 for base access
+ACPI: Added _OSI(Module Device)
+ACPI: Added _OSI(Processor Device)
+ACPI: Added _OSI(3.0 _SCP Extensions)
+ACPI: Added _OSI(Processor Aggregator Device)
+ACPI: 1 ACPI AML tables successfully acquired and loaded
+ACPI: Interpreter enabled
+ACPI: PM: (supports S0 S5)
+ACPI: Using IOAPIC for interrupt routing
+PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+PCI: Using E820 reservations for host bridge windows
+ACPI: Enabled 2 GPEs in block 00 to 0F
+ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+acpi PNP0A03:00: _OSC: OS supports [ASPM ClockPM Segments MSI HPX-Type3]
+acpi PNP0A03:00: PCIe port services disabled; not requesting _OSC control
+acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended configuration space under this bridge
+PCI host bridge to bus 0000:00
+pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
+pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
+pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]
+pci_bus 0000:00: root bus resource [mem 0x20000000-0xfebfffff window]
+pci_bus 0000:00: root bus resource [mem 0x100000000-0x17fffffff window]
+pci_bus 0000:00: root bus resource [bus 00-ff]
+pci 0000:00:00.0: [8086:1237] type 00 class 0x060000 conventional PCI endpoint
+pci 0000:00:01.0: [8086:7000] type 00 class 0x060100 conventional PCI endpoint
+pci 0000:00:01.1: [8086:7010] type 00 class 0x010180 conventional PCI endpoint
+pci 0000:00:01.1: BAR 4 [io  0xc040-0xc04f]
+pci 0000:00:01.1: BAR 0 [io  0x01f0-0x01f7]: legacy IDE quirk
+pci 0000:00:01.1: BAR 1 [io  0x03f6]: legacy IDE quirk
+pci 0000:00:01.1: BAR 2 [io  0x0170-0x0177]: legacy IDE quirk
+pci 0000:00:01.1: BAR 3 [io  0x0376]: legacy IDE quirk
+pci 0000:00:01.3: [8086:7113] type 00 class 0x068000 conventional PCI endpoint
+pci 0000:00:01.3: quirk: [io  0x0600-0x063f] claimed by PIIX4 ACPI
+pci 0000:00:01.3: quirk: [io  0x0700-0x070f] claimed by PIIX4 SMB
+pci 0000:00:02.0: [1234:1111] type 00 class 0x030000 conventional PCI endpoint
+pci 0000:00:02.0: BAR 0 [mem 0xfd000000-0xfdffffff pref]
+pci 0000:00:02.0: BAR 2 [mem 0xfebf0000-0xfebf0fff]
+pci 0000:00:02.0: ROM [mem 0xfebe0000-0xfebeffff pref]
+pci 0000:00:02.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]
+pci 0000:00:03.0: [8086:100e] type 00 class 0x020000 conventional PCI endpoint
+pci 0000:00:03.0: BAR 0 [mem 0xfebc0000-0xfebdffff]
+pci 0000:00:03.0: BAR 1 [io  0xc000-0xc03f]
+pci 0000:00:03.0: ROM [mem 0xfeb80000-0xfebbffff pref]
+ACPI: PCI: Interrupt link LNKA configured for IRQ 10
+ACPI: PCI: Interrupt link LNKB configured for IRQ 10
+ACPI: PCI: Interrupt link LNKC configured for IRQ 11
+ACPI: PCI: Interrupt link LNKD configured for IRQ 11
+ACPI: PCI: Interrupt link LNKS configured for IRQ 9
+PCI: Using ACPI for IRQ routing
+pci 0000:00:02.0: vgaarb: setting as boot VGA device
+pci 0000:00:02.0: vgaarb: bridge control possible
+pci 0000:00:02.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+vgaarb: loaded
+clocksource: Switched to clocksource kvm-clock
+pnp: PnP ACPI init
+pnp: PnP ACPI: found 6 devices
+clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
+pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
+pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
+pci_bus 0000:00: resource 7 [mem 0x20000000-0xfebfffff window]
+pci_bus 0000:00: resource 8 [mem 0x100000000-0x17fffffff window]
+pci 0000:00:01.0: PIIX3: Enabling Passive Release
+pci 0000:00:00.0: Limiting direct PCI/PCI transfers
+PCI: CLS 0 bytes, default 64
+RAPL PMU: API unit is 2^-32 Joules, 0 fixed counters, 10737418240 ms ovfl timer
+Unpacking initramfs...
+clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x6d519938aa3, max_idle_ns: 881591130365 ns
+workingset: timestamp_bits=46 max_order=17 bucket_order=0
+io scheduler mq-deadline registered
+io scheduler kyber registered
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+ACPI: button: Power Button [PWRF]
+Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+00:04: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+i8042: PNP: PS/2 Controller [PNP0303:KBD,PNP0f13:MOU] at 0x60,0x64 irq 1,12
+serio: i8042 KBD port at 0x60,0x64 irq 1
+serio: i8042 AUX port at 0x60,0x64 irq 12
+intel_pstate: CPU model not supported
+Freeing initrd memory: 2264K
+NET: Registered PF_VSOCK protocol family
+IPI shorthand broadcast: enabled
+input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input1
+sched_clock: Marking stable (232009251, 138415356)->(378136277, -7711670)
+Freeing unused kernel image (initmem) memory: 764K
+Write protecting the kernel read-only data: 8192k
+Freeing unused kernel image (rodata/data gap) memory: 392K
+Run /init as init process
+
+========================================
+INIT: kernelet-in-Linux prototype harness
+========================================
+INIT: module order from /modules/order (1 entry)
+INIT: loading endovisor.ko klet_test_hooks=1 klet_vsock_profile=0 klet_vsock_opt=1
+endovisor: loading out-of-tree module taints kernel.
+kernelet: endovisor loaded: /dev/endovisor, API 2, image ABI 7, watch on, mirror on, fpu area 1088 B, tsc 3791992 kHz, TEST HOOK on
+INIT: running /tests/10-vsock
+RUN-TEST: running /run-vsock /vsocktest.image
+kernelet: PIE image loaded: 163840 bytes, 102400 shared, 61440 private per instance, 392 relative relocations
+kernelet: kind 0 "vsocktest" registered: an image of 157568 bytes, PIE text offsets [0x0, 0x10f55), 102400 bytes shared
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4093 loops=40 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 37) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c007b000, 0xffffaf27c00a3000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 117 cycles through the stack switch, 54 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4093 loops=40 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 873 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x74d000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 37) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 37) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok socket lifecycle, partial transfers, wraparound, ordered payload, half-close EOF
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=3 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 38) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c007b000, 0xffffaf27c00a3000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 112 cycles through the stack switch, 51 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=3 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 851 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x780000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 38) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 38) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok default denial, explicit permission, and dead CID refusal
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=5 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 39) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c007b000, 0xffffaf27c00a3000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=5 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 446 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x77f000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 39) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 39) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (784 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok partial user faults publish or consume only copied prefixes and cancel empty leases
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=32 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 40) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c007b000, 0xffffaf27c00a3000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 52 cycles through the stack switch, 33 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=32 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 850 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x92d000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 1 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=1 peer=4 size=4096 loops=32 port=1234"
+kernelet: sandbox 1: vcpu 0 carrier (pid 41) arrived as kernelet/1/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: PIE sharing: sandboxes 1 and 0: distinct mappings, 25 shared pages, 15 private pages each
+kernelet: sandbox 1: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 1: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 1 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 1: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 114 cycles through the stack switch, 55 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=1 peer=4 size=4096 loops=32 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 849 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9ea000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 1: vcpu 0 carrier (pid 41) dying
+kernelet: sandbox 1: vcpu 0 carrier (pid 41) lifeline closed, the last one
+kernelet: sandbox 0: vcpu 0 carrier (pid 40) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 40) lifeline closed, the last one
+kernelet: sandbox 1 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 1 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 1 destroyed
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok independent kernelet peers verified echoed payloads through shared rings
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 42) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c007b000, 0xffffaf27c00a3000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 449 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x936000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 1 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=4 peer=6 size=4096 loops=1 port=1234"
+kernelet: sandbox 1: vcpu 0 carrier (pid 43) arrived as kernelet/1/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: PIE sharing: sandboxes 1 and 0: distinct mappings, 25 shared pages, 15 private pages each
+kernelet: sandbox 1: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 1: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 1 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 1: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=4 peer=6 size=4096 loops=1 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 438 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c3000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: sandbox 0: vcpu 0 carrier (pid 42) dying
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 42) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 1: vcpu 0 carrier (pid 43) dying
+kernelet: sandbox 1: vcpu 0 carrier (pid 43) lifeline closed, the last one
+kernelet: sandbox 1 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 1 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 1 destroyed
+VSOCK-TEST: ok surviving kernelet observes reset and exchanges verified data after peer destruction
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=1 peer=0 size=4096 loops=8 port=4321"
+kernelet: sandbox 0: vcpu 0 carrier (pid 44) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input3
+kernelet: service stub: 97 cycles through the stack switch, 50 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=1 peer=0 size=4096 loops=8 port=4321"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 869 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x783000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 44) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 44) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok host listener accepts a tenant-initiated connection
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 45) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 103 cycles through the stack switch, 50 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 454 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c2000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 45) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 45) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok kill wakes blocked reader and releases peer-owned resources
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 47) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 451 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c1000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 47) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 47) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok kill wakes blocked writer and releases peer-owned resources
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=3 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 49) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 46 cycles through the stack switch, 33 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=3 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 563 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c0000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 49) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 49) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok kill wakes blocked connect with full backlog and releases peer-owned resources
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=6 size=4096 loops=1 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 51) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=6 size=4096 loops=1 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 448 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa01000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 51) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 51) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok reservation survives concurrent shutdown until publication
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 53) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 61 cycles through the stack switch, 44 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 749 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa1d000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: sandbox 0: vcpu 0 carrier (pid 53) dying
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 53) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok reservation survives peer destruction
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=8 size=4096 loops=17 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 55) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 61 cycles through the stack switch, 44 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=8 size=4096 loops=17 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 752 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x918000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 55) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 55) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok controlled consumption wakes full-ring writer without peer death
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 57) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 52 cycles through the stack switch, 37 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 640 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x90f000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 57) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 57) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok same-endpoint TX lease commit wakes registered contender
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=1 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 60) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 41 cycles through the stack switch, 29 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=1 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 500 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x4dc000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 60) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 60) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok same-endpoint TX lease zero cancellation wakes registered contender
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=9 size=4096 loops=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 63) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 52 cycles through the stack switch, 37 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=9 size=4096 loops=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 636 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c6000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 63) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 63) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2864 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok same-endpoint RX lease commit wakes registered contender
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=9 size=4096 loops=1 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 66) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 115 cycles through the stack switch, 55 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=9 size=4096 loops=1 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 852 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c7000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 66) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 66) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2864 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok same-endpoint RX lease zero cancellation wakes registered contender
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=10 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 69) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=10 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 436 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9b1000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 69) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 69) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (784 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok SHUT_WR plus zero TX cancellation enables peer EOF
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 71) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 46 cycles through the stack switch, 33 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 564 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9d8000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 71) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 71) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok epoll-only zero TX lease cancellation restores readiness
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=9 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 73) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=9 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 440 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9c3000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 73) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 73) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok epoll-only zero RX lease cancellation restores readiness
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 75) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 440 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x96e000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 75) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 75) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2832 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok interrupted reader balances demand and preserves later progress
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=8 size=4096 loops=17 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 77) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=8 size=4096 loops=17 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 439 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x889000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 77) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 77) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok interrupted writer balances demand and preserves later progress
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 79) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 439 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x96f000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 79) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 79) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok poll-only RX publication and repeated readiness
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 82) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 145 cycles through the stack switch, 75 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 1247 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x90d000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 82) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 82) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok level epoll-only RX publication and repeated readiness
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=2 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 85) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 132 cycles through the stack switch, 61 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=2 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 931 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9f5000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 85) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 85) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok edge epoll-only RX publication and repeated readiness
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=8 size=4096 loops=17 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 88) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 132 cycles through the stack switch, 62 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=8 size=4096 loops=17 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 973 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9ee000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 88) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 88) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok epoll-only full-to-writable consumption
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=1 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 89) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 121 cycles through the stack switch, 60 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=1 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 918 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x938000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 0: killed by its holder, the sandbox is dying; 1 carrier(s) left
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 89) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 89) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (2864 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: killed, reason 0x11 (killed by its holder)
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok killed waiting image unregisters demand and wakes epoll peer
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=11 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 90) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=11 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 454 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9ba000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 90) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 90) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (8976 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok accept wakes connector after bounded backlog release
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=256 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 92) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c0126000, 0xffffaf27c014e000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0x1000000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 130 cycles through the stack switch, 62 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0x1000000..0x1400000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=256 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 1089 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa07000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: sandbox 1 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=256 port=1234"
+kernelet: sandbox 1: vcpu 0 carrier (pid 93) arrived as kernelet/1/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: PIE sharing: sandboxes 1 and 0: distinct mappings, 25 shared pages, 15 private pages each
+kernelet: sandbox 1: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 1: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 1 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 1: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=256 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 437 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x926000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 92) dying
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 1: vcpu 0 carrier (pid 93) dying
+kernelet: sandbox 1: vcpu 0 carrier (pid 93) lifeline closed, the last one
+kernelet: sandbox 0: vcpu 0 carrier (pid 92) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 1 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 1 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 1 destroyed
+VSOCK-TEST: ok concurrent independent rings stress check-register-commit retries
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4093 loops=40 port=1234"
+kernelet: sandbox 0: vcpu 0 carrier (pid 96) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 115 cycles through the stack switch, 56 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4093 loops=40 port=1234"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 852 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x962000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 96) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 96) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: ok socket lifecycle, partial transfers, wraparound, ordered payload, half-close EOF
+VSOCK-TEST: BENCH transport=pipe size=4096 repeat=1 rounds=1024 bytes=8388608 wall_ns=23618102 cpu_ns=11808672 peer_cpu_ns=11748201 p50_ns=22646 p95_ns=25018 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 98) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 442 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x8c0000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=1 rounds=1024 bytes=8388608 wall_ns=25047853 cpu_ns=13539015 peer_cpu_ns=13010824 p50_ns=22726 p95_ns=38168 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 98) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 98) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=4096 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 99) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=4096 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 449 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x7ce000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=4096 repeat=1 rounds=1024 bytes=8388608 wall_ns=32215532 cpu_ns=16061503 peer_cpu_ns=17761519 p50_ns=31804 p95_ns=46372 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 99) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 99) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 100) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 450 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x7c9000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=2 rounds=1024 bytes=8388608 wall_ns=26103890 cpu_ns=13211443 peer_cpu_ns=14765140 p50_ns=22733 p95_ns=40694 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 100) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 100) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=4096 repeat=2 rounds=1024 bytes=8388608 wall_ns=24644254 cpu_ns=12221586 peer_cpu_ns=12403697 p50_ns=22654 p95_ns=30048 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=4096 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 102) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=4096 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 443 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x979000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=4096 repeat=2 rounds=1024 bytes=8388608 wall_ns=23850643 cpu_ns=12685145 peer_cpu_ns=12539514 p50_ns=22186 p95_ns=35342 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 102) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 102) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=4096 repeat=3 rounds=1024 bytes=8388608 wall_ns=24110069 cpu_ns=12422812 peer_cpu_ns=11646784 p50_ns=22607 p95_ns=27444 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=4096 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 104) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=4096 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 441 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa27000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=4096 repeat=3 rounds=1024 bytes=8388608 wall_ns=24460751 cpu_ns=13278765 peer_cpu_ns=12902614 p50_ns=22671 p95_ns=33130 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 104) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 104) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=4096 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 105) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=4096 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 439 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x950000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=4096 repeat=3 rounds=1024 bytes=8388608 wall_ns=24907313 cpu_ns=13481578 peer_cpu_ns=12776960 p50_ns=22267 p95_ns=38526 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 105) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 105) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (9008 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=16384 repeat=1 rounds=1024 bytes=33554432 wall_ns=28305389 cpu_ns=14488447 peer_cpu_ns=13638060 p50_ns=26199 p95_ns=33208 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=16384 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 107) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=16384 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 443 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa36000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=1 rounds=1024 bytes=33554432 wall_ns=44960057 cpu_ns=24006809 peer_cpu_ns=23262950 p50_ns=43383 p95_ns=49692 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 107) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 107) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=16384 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 108) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=16384 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 439 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x8c1000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=16384 repeat=1 rounds=1024 bytes=33554432 wall_ns=38920570 cpu_ns=23305806 peer_cpu_ns=17776502 p50_ns=34502 p95_ns=43873 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 108) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 108) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (33584 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=16384 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 109) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=16384 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 440 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa55000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=2 rounds=1024 bytes=33554432 wall_ns=45452491 cpu_ns=23149400 peer_cpu_ns=24489341 p50_ns=43285 p95_ns=56826 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 109) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 109) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=16384 repeat=2 rounds=1024 bytes=33554432 wall_ns=27933154 cpu_ns=14162022 peer_cpu_ns=13577471 p50_ns=26117 p95_ns=32375 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=16384 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 111) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=16384 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 443 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa37000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=16384 repeat=2 rounds=1024 bytes=33554432 wall_ns=38871874 cpu_ns=23299361 peer_cpu_ns=17673938 p50_ns=34171 p95_ns=49623 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 111) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 111) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (33584 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=16384 repeat=3 rounds=1024 bytes=33554432 wall_ns=31723024 cpu_ns=16415529 peer_cpu_ns=15225557 p50_ns=29213 p95_ns=44462 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=16384 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 113) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=16384 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 439 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x822000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=16384 repeat=3 rounds=1024 bytes=33554432 wall_ns=45349503 cpu_ns=23506365 peer_cpu_ns=23931431 p50_ns=43752 p95_ns=49815 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 113) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 113) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=16384 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 114) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=16384 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 451 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9a1000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=16384 repeat=3 rounds=1024 bytes=33554432 wall_ns=38719213 cpu_ns=23903062 peer_cpu_ns=16951309 p50_ns=34173 p95_ns=48345 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 114) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 114) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (33584 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=65536 repeat=1 rounds=1024 bytes=134217728 wall_ns=41480074 cpu_ns=21685305 peer_cpu_ns=19529838 p50_ns=38935 p95_ns=52862 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=65536 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 116) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 115 cycles through the stack switch, 55 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=65536 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 853 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x99a000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=1 rounds=1024 bytes=134217728 wall_ns=57263734 cpu_ns=29379691 peer_cpu_ns=30197888 p50_ns=53419 p95_ns=71932 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 116) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 116) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=65536 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 117) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 37 cycles through the stack switch, 26 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=65536 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 453 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa3e000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=65536 repeat=1 rounds=1024 bytes=134217728 wall_ns=55385982 cpu_ns=30072378 peer_cpu_ns=27542401 p50_ns=51643 p95_ns=69147 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 117) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 117) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (131888 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=65536 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 118) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 115 cycles through the stack switch, 55 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=65536 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 849 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x7a6000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=2 rounds=1024 bytes=134217728 wall_ns=57425041 cpu_ns=29553422 peer_cpu_ns=30233171 p50_ns=53517 p95_ns=71995 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 118) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 118) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=65536 repeat=2 rounds=1024 bytes=134217728 wall_ns=41933564 cpu_ns=22456891 peer_cpu_ns=19289942 p50_ns=38968 p95_ns=51989 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=65536 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 120) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 35 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=65536 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 443 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x912000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=65536 repeat=2 rounds=1024 bytes=134217728 wall_ns=54547994 cpu_ns=29578810 peer_cpu_ns=27188461 p50_ns=51488 p95_ns=60955 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 120) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 120) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (131888 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+VSOCK-TEST: BENCH transport=pipe size=65536 repeat=3 rounds=1024 bytes=134217728 wall_ns=41015662 cpu_ns=21379620 peer_cpu_ns=19412118 p50_ns=38390 p95_ns=48881 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=0 size=65536 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 122) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 115 cycles through the stack switch, 55 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=0 size=65536 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 850 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0xa04000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=klet size=65536 repeat=3 rounds=1024 bytes=134217728 wall_ns=56444797 cpu_ns=29563569 peer_cpu_ns=29426115 p50_ns=53323 p95_ns=60912 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 122) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 122) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 8 heap block(s) the kernelet still held freed (816 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: sandbox 0 created: kind 0 "vsocktest", 1 vcpu(s), memory 4096 KiB (max 4096 KiB), max_tasks 16, cmdline "role=7 size=65536 loops=1056 port=1234 profile=0"
+kernelet: sandbox 0: vcpu 0 carrier (pid 123) arrived as kernelet/0/0: address space emptied, every signal ignored, dumpable 1 -> 0
+kernelet: sandbox 0: PIE mapping [0xffffaf27c00bc000, 0xffffaf27c00e4000), shared 102400 bytes, private 61440 bytes
+kernelet: sandbox 0: host offsets: gs:current 0x1fb00, gs:preempt_count 0x1fb08, task->carrier_hooks +1968, hooks->vrec +16
+kernelet: sandbox 0 started: kind "vsocktest" loaded as its instance (61440 bytes of private data), grant 4096 KiB at 0xc00000, charged to its control group
+kernelet: sandbox 0: every virtual CPU's carrier has arrived (1); booting the kernelet
+kernelet: service stub: 36 cycles through the stack switch, 25 for the service body alone (least of 7 rounds of 2000, rdtsc, interrupts off)
+kernelet: vOSTD up: grant 0xc00000..0x1000000, linear map 0xffff97cfc0000000, 1 vCPU(s), tsc 3791992 kHz, fpu area 1088 B
+kernelet: vOSTD: command line "role=7 size=65536 loops=1056 port=1234 profile=0"
+kernelet: vOSTD: heap: a 64-byte allocation and its free, 440 cycles the pair (least of 7 rounds of 1000, rdtsc)
+kernelet: space 1 created: root 0x9ed000, area [0x10000, 0x7ffffffff000), its own inode, mm owner a task
+kernelet: stopped, exit code 0
+VSOCK-TEST: BENCH transport=api size=65536 repeat=3 rounds=1024 bytes=134217728 wall_ns=56227027 cpu_ns=29667631 peer_cpu_ns=29162864 p50_ns=51834 p95_ns=64188 outer_qemu_ns=0 outer_vhost_ns=0 outer_peer_ns=0 outer_wall_ns=0
+kernelet: arming the eviction sweep every 1000 us on 2 cpu(s)
+kernelet: sandbox 0: vcpu 0 carrier (pid 123) dying
+kernelet: sandbox 0: vcpu 0 carrier (pid 123) lifeline closed, the last one
+kernelet: sandbox 0 is gone: 9 heap block(s) the kernelet still held freed (131888 bytes), 2 kernelet stack(s) returned to vmalloc (1 still in use)
+kernelet: sandbox 0 exited: the kernel proper powered off, exit code 0
+kernelet: sandbox 0 destroyed
+kernelet: kind 0 "vsocktest" unregistered
+VSOCK-TEST: PASS lifecycle, rings, backpressure, peer death, survivors, end-to-end measurements
+RUN-TEST: /run-vsock /vsocktest.image exited 0
+RUN-TEST: done
+INIT: /tests/10-vsock exited 0
+INIT: unloading endovisor
+kernelet: VSOCK: 0 endpoints live, 0 connections live, 63387 waits, 1095769636 bytes published, notification_mode=1
+kernelet: eviction: 2209 sweep(s), 0 eviction(s)
+kernelet: watch timer: 2725 tick(s), 29 upcall(s), 0 voluntary yield(s)
+kernelet: kicks: 0 IPI(s), 0 requested firing(s): 0 delivered an upcall, 0 found user mode or a service, 0 a critical section
+kernelet: STATS sandboxes=50 deferrals=0 longest_defer_us=0 longest_tick_gap_us=5702 forced_yields=0 bad_preempt=0 on_spin=0 yield_to=0 mm_switch=37 fpu_swap=0 fpu_reject=0 mirror_fault=0 stolen_ms=0 kstacks=100
+kernelet: MEMSTATS faults=0 mkwrites=0 reported=0 kernel_faults=0 maps=900 unmaps=0 unmapped=0 protects=0 protected=0 flushes=0 flush_alls=0 waits=0 wait_sleeps=0 wakes=0 spaces=50
+kernelet: kills: 0 found in a service, 0 in kernelet code by the watch timer
+kernelet: heap: 350550 blocks allocated, 350125 freed by the kernelet, 425 freed at teardown, 0 live
+kernelet: kernelet stacks: 100 made, 100 returned, 0 live
+kernelet: carrier records: 50 made, 50 freed, 0 live
+kernelet: endovisor unloaded
+INIT: done
+ACPI: PM: Preparing to enter system sleep state S5
+reboot: Power down

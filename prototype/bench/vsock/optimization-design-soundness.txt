@@ -1,0 +1,234 @@
+Independent pre-implementation review: notification optimization soundness
+Date: 2026-11-06
+Verdict: APPROVE WITH CONDITIONS
+
+Scope and independence
+
+This is a design review before implementation, not approval of an implemented
+patch. I read AGENTS.md, optimization-plan.txt, the current broker and vOSTD
+socket implementation, relevant carrier/death paths, the existing correctness
+harness, and profile-before-unpinned.txt. I did not read other reviewers' reports
+or depend on another reviewer's conclusions. I changed no implementation and
+ran no build or QEMU instance. The conditions below must be checked against the
+actual patch before enabling mode 2 by default.
+
+Reviewed input SHA-256 fingerprints:
+  prototype/linux/endovisor/vsock.c
+    132b2825d9c2fb05a91f4bb88b89bcf5066958bb29d873e63f389d6057ed2d32
+  prototype/vostd/src/vsock.rs
+    6bbfe33fd3bf94ed2930eba886edd426edc222c032629fb575bfce2431ad6b34
+  prototype/bench/vsock/optimization-plan.txt
+    e8f8c9c183147989fea54453babc6fe07ea8ec7cc4a01df232977a8ee308f863
+  prototype/bench/vsock/profile-before-unpinned.txt
+    b774e7802f0a1bb6a749aca1b6983f730894750c9d4348701775f54db961e77b
+
+I also checked the local Linux 6.12 wait/poll primitives in
+prototype/.build/linux-6.12/include/linux/{wait,poll}.h and
+kernel/sched/wait.c. The wait macro registers and rechecks before scheduling;
+the broker's generation closes its separate unlock-to-registration interval.
+
+Assessment
+
+The proposed design can preserve the existing safe API's lifetime and progress
+properties. Neither independent ring storage nor the reserve/copy/commit
+protocol needs to change. The two optimizations address distinct sources of
+notification: reservations cannot improve another operation's readiness, and
+a commit need not wake blocking data operations when none are interested in
+that ring. Poll/epoll interest cannot be inferred from blocking waiter counts.
+The proposed separate static poll queue correctly handles that distinction.
+
+The measured diagnostic run supports testing notification reduction, but does
+not prove it will improve performance. For 64 KiB klet transfers it records
+28898 wait attempts, 28895 voluntary-switch observations and 20578 retry-EAGAIN
+observations; the two reservation operations each issued 8320 notifications.
+Elapsed commit intervals include wake work and scheduling. None of these
+observations licenses weakening notification correctness, attributing the full
+commit interval to CPU work, or claiming a speedup before matched measurements.
+
+Required implementation conditions
+
+1. Keep the generation snapshot BEFORE the condition test.
+
+   The current kv_request snapshots kv_generation at vsock.c:397 and calls
+   kv_step at :399 with kv_lock held. After EAGAIN, register demand under that
+   same lock, then unlock and call the existing generation-based wait. Reacquire
+   the mutex, unregister demand unconditionally, and only then examine the wait
+   return code or retry. Do this on immediate condition success, signal/restart
+   returns, and sandbox death as well as an actual scheduler sleep.
+
+   Do not move the snapshot below kv_step: death notifications are allowed
+   without kv_lock. A peer can become dying after kv_step returns EAGAIN but
+   before a later snapshot; recording the new generation there would absorb
+   its sole notification while kv_dead(ep) remains false for the surviving
+   endpoint. The wait could then sleep indefinitely.
+
+   Counts represent the entire registered interval through mutex reacquisition,
+   not only tasks currently linked into the Linux waitqueue or asleep. A count
+   must be incremented exactly once per EAGAIN wait attempt and decremented
+   exactly once before leaving that attempt. Do not register nonblocking calls.
+
+2. Associate demand with the exact ring, and check BOTH classes on commits.
+
+   RESERVE_TX demand belongs to conn->ring[ep->side]; RESERVE_RX demand belongs
+   to conn->ring[ep->side ^ 1]. These must match the existing reserve/commit
+   mapping ep->side ^ !tx. Prefer one mapping helper or otherwise make the
+   correspondence explicit. ACCEPT and backlog-blocked CONNECT have no data
+   ring demand; leave them on the global generation protocol and wake them
+   through control/terminal events.
+
+   A successful COMMIT_TX or COMMIT_RX must inspect both producer and consumer
+   counts for its ring under kv_lock after clearing its lease. When either is
+   nonzero, advance the blocking generation before waking the blocking queue.
+   Do not gate on empty/full transitions or on committed byte count.
+
+   Counterexamples to narrower gating:
+   - A second host writer waits behind tx_lease with ample unused capacity;
+     COMMIT_TX clears that lease and must wake the producer waiter.
+   - A second host reader waits behind rx_lease with unread data still present;
+     COMMIT_RX(0) leaves head unchanged but must wake that consumer waiter.
+   - After SHUT_WR on an empty ring with an admitted TX lease, the peer reader
+     waits for lease resolution. COMMIT_TX(0) creates EOF without adding data.
+   - A full ring becomes writable after COMMIT_RX(n), so consumer-only demand
+     is insufficient for that commit.
+
+   Apply the same policy to BOTH commit paths: image commits through
+   kv_request and host commits that call kv_step directly at :559. Updating
+   only kv_request leaves the principal host data path outside the policy.
+
+3. Limit reservation suppression to the reserve operations themselves.
+
+   RESERVE_TX sets tx_lease and RESERVE_RX sets rx_lease (:274). Positions do
+   not advance, so available bytes/space cannot increase. They only make their
+   own directional readiness less favorable, including delaying EOF when an
+   admitted producer is outstanding. Losing these notifications is therefore
+   safe. Their zero-length and EOF-success returns also create no progress.
+
+   Do not accidentally suppress the following commit, including a commit of
+   zero bytes after a total copy fault. vOSTD correctly commits these zero
+   prefixes at vsock.rs:255/:286, and the host does the same at :548-562.
+   Retain the original validation and return behavior for failed commits.
+
+4. Make poll notification independent of data-operation demand.
+
+   Register poll_wait on the separate static poll queue BEFORE acquiring
+   kv_lock and inspecting readiness, as the existing poll method does at
+   :584-585. Every successful data commit must notify this queue, including
+   zero-prefix cancellation and same-direction lease release. Controls and
+   terminal events must notify it too. A poll-only or epoll-only subscriber
+   does not increment a blocking data waiter count.
+
+   Keeping both queues static avoids introducing a connection-owned waitqueue
+   lifetime requiring pollfree/RCU reclamation. Retain the file operations'
+   THIS_MODULE ownership. Use the normal wake primitive without a speculative
+   lockless waitqueue_active shortcut or selective event mask in this patch;
+   such changes require a separate ordering/event-mask argument.
+
+5. Preserve unconditional broad notification for terminal/control events.
+
+   klet_vsock_wake must continue to advance the global blocking generation and
+   wake both queues without acquiring kv_lock, sleeping, traversing endpoints,
+   or inspecting per-ring counters. It is invoked by klet_kill_carriers at
+   carrier.c:1043 after sandbox.c marks dying, including callers which cannot
+   take a mutex. Do not replace that API with the gated data-commit helper.
+
+   Keep broad notifications for shutdown, endpoint/listener close, pending
+   connection cancellation, connect, accept/backlog release, and final reaping.
+   In particular, do not postpone death notification until all carriers leave:
+   some of those carriers may themselves be blocked in broker waits.
+
+   SHUT_WR notification alone is insufficient. If an admitted TX lease remains,
+   a reader rechecks and continues waiting. Its later TX commit/cancellation
+   must also notify under conditions 2 and 4. Preserve the existing check at
+   :267 that delays EOF until that reservation resolves.
+
+6. Preserve and document the actual lifetime assumptions.
+
+   Host operations hold an active file reference; concurrent close(fd) does
+   not run the endpoint's final release while that operation is blocked or
+   copying. Safe image operations borrow the uniquely owned !Sync socket/ring
+   exclusively, so another safe caller cannot close the same endpoint while
+   its service waits. The active carrier prevents all-carriers-gone reaping
+   until it returns from the service and leaves. These facts pin ep, its conn,
+   and the chosen ring/count address across mutex unlock and relock.
+
+   Readiness does not constitute a lifetime reference, and the new counts must
+   not be presented as references. Do not cache a peer endpoint across an
+   unlocked interval. Do not move forced kv_drop earlier than the existing
+   all-carriers-gone stage. The raw scalar service currently has no independent
+   per-operation refcount against a deliberately concurrent raw CLOSE; that
+   is an existing unsafe-use limitation, not something these counters fix.
+
+   Signals/kill must unwind through the normal wait return and counter cleanup
+   before the service termination path discards its stack. Do not add an early
+   exit or invoke carrier termination between registration and decrement.
+
+Lost-wakeup argument for the proposed locked-demand protocol
+
+For a data waiter, kv_step(EAGAIN), count registration and the old generation
+snapshot are protected by kv_lock. A data commit cannot occur between that
+condition test and registration. If a commit completed earlier, the test sees
+its state. If it completes later, it sees registered demand and advances the
+generation before waking. A commit in the unlock-to-waitqueue-registration
+interval is caught by generation mismatch; one after registration reaches
+the queue, whose macro rechecks the condition before scheduling.
+
+If a commit finds zero ring demand, no data request for that ring is in the
+protected test-to-wait interval. A request entering afterward sees committed
+state. An unrelated ACCEPT/CONNECT wait is not made ready by a data commit,
+and poll subscribers are separately notified. This is the justification for
+omitting that blocking generation increment, rather than an assumption about
+whether a task happened to sleep.
+
+An unrelated broad wake can produce extra retries, but cannot lose progress.
+After each wake a waiter unregisters and rechecks while retaining kv_lock;
+there is no commit-sized gap between unregistering and a new EAGAIN
+registration. A death event may occur without that lock, so it always changes
+generation and retains the snapshot-before-test rule described above.
+
+Required validation before choosing a default
+
+- Run the existing lifecycle/fault/death/half-close/reservation/survivor suite
+  in modes 0, 1 and 2, with per-case timeouts and final live-resource checks.
+- Add poll-only and epoll-only waits with no blocking data waiter: data arrival,
+  full-to-writable consumption, zero-prefix lease release, listener arrival,
+  shutdown and peer death. Exercise registration against concurrent commits,
+  not only zero-timeout polling after the event has finished. Include epoll
+  edge-triggered rearming/readiness transitions as well as level triggering.
+- Force two host writers on one endpoint to overlap a TX lease while the ring
+  has free space; the second must complete after the first commits. Repeat for
+  two readers while committed data remains and one owns RX lease. A bounded
+  TX delay already exists; the RX case needs a controlled overlapping copy or
+  appropriate bounded test hook. Merely starting threads does not establish
+  the intended interleaving.
+- Exercise zero-byte cancellation with an already registered waiter, both TX
+  and RX. In particular, SHUT_WR followed by cancellation of the admitted TX
+  lease must produce peer EOF, and cancelled RX must preserve bytes for the
+  next reader. Existing serial partial-fault tests do not establish a waiter
+  was present when cancellation happened.
+- Interrupt a blocked host reader/writer with a non-restarting signal, verify
+  the syscall returns and a later operation on that connection progresses.
+  Also kill an image blocked in a data wait, destroy the peer during an active
+  reservation, and verify wait registrations are gone before endpoint/ring
+  teardown. A temporary assertion/counter check at controlled teardown is
+  useful; do not infer balanced counters just from successful throughput.
+- Stress the unlock-to-registration window with commits and with peer death;
+  if adding a bounded test gate, keep it outside normal benchmark operation.
+  Run simultaneous waiters on unrelated rings to expose wrong ring mapping,
+  and backlog/accept waits alongside data traffic to verify broad controls.
+- Inspect the actual patch for all conditions above, then compare instrumented
+  wake/retry observations and uninstrumented matched performance. No design
+  review alone substitutes for the post-implementation inspection.
+
+Ablation caveat
+
+Mode 0 should retain the original notification/queue path if it is called the
+baseline, and mode 1 should differ only by reservation suppression. Moving all
+modes to two queues adds a second wake operation even without poll subscribers
+and changes the measured baseline's costs. If queue separation is shared by
+all modes instead, disclose that change and retain the original uninstrumented
+binary measurement; do not attribute every mode-0/mode-2 difference solely to
+gating or claim a historical baseline is byte-identical.
+
+No observed flaw requires rejecting these two optimizations as a design.
+Approval is conditional on the explicit ordering, lifetime, dual-commit-path,
+unconditional terminal/poll notification and validation requirements above.

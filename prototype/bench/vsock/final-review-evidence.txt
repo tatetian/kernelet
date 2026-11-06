@@ -1,0 +1,167 @@
+Independent final review: performance evidence and whole-page coherence
+Date: 2026-11-06
+Verdict: NO BLOCKING PERFORMANCE-EVIDENCE OBJECTION FOUND.
+
+The proposal supports the bounded result it actually states: in this configured
+serialized echo workload, optimized klet loses to real virtio at 4 KiB and wins
+at 16/64 KiB; its large-transfer behavior approaches or exceeds the measured
+pipe reference. Contemporary uninstrumented ablations support retaining mode 2
+for the experimental harness. They do not establish a universal ranking,
+production readiness, transport-only CPU cost, or faster virtual interrupts.
+The full page preserves those distinctions coherently from summary to decision.
+
+Scope and independence
+
+Read AGENTS.md and the entire proposal, the evidence README and summary, all
+six final serial/outer/environment records, the two profile runs and extracted
+profile summary, optimization plan and three pre-implementation design reports,
+and the subsequent Linux implementation review. Inspected the comparison
+runner/checker and run-vsock.c, vsock-peer.c, and vsock-bench.h. Independently
+parsed arithmetic, case ordering, per-boot results, fingerprints and profile
+records. Ran only the read-only comparison checker, which passes all six
+retained runs. No build, QEMU run, implementation edit, or proposal edit was
+performed. This report is the only file written by this reviewer.
+
+Reviewed proposal SHA-256:
+3a4946bb45d0629747ff664dfae9ff8be5ca14844c6cd033e487a2bd45bb2aa8
+run-vsock.c SHA-256:
+b2304163af4eee27ec074c171de33bea3d1eacc100de644ba4a62b6164db942c
+run-vsock-comparison.py SHA-256:
+1f12af957a185bec1bb03be70d692619e91a4f2b6b1574cf9ccf0f7773ec2671
+
+Arithmetic, completeness, and ordering
+
+All six logs contain 84 measurements: 7 repeats x 3 sizes x 4 paths, with the
+required correctness markers, clean unload, MSI delivery evidence and matching
+outer records. The 504 measurements have identical recorded source fingerprints
+and identical recorded binary/configuration fingerprints across all six boots.
+Current measured-source files match those hashes except the documented later
+Makefile default selection. Profile sources match the comparison sources.
+
+Independent mode-2 calculations reproduce the published medians and ratios:
+size       klet/virtio   klet/pipe   direct-API advantage over klet
+4 KiB      0.85103       0.96295     1.149%
+16 KiB     1.32422       1.01174     2.249%
+64 KiB     1.80254       1.08251     4.914%
+
+The klet/virtio ratio for cases paired by boot and repeat ranges from
+0.82590-0.86294, 1.28210-1.36727, and 1.76626-1.84005 respectively. Thus the
+cross-size ranking is not an artifact of dividing differently ordered medians.
+The independent mode-2/mode-0 median ratios are 1.24778, 1.79106 and 2.19858.
+All table CPU/latency arithmetic also matches the supplied replay checker.
+
+Per-boot klet medians, MiB/s:
+boot    4 KiB     16 KiB     64 KiB
+0a      252.575   647.918    1512.816
+1a      322.125   709.397    2239.763
+2a      319.486   1151.250   3326.428
+2b      323.576   1162.259   3310.143
+1b      321.100   708.767    2244.600
+0b      259.487   644.733    1503.582
+
+Every observed four-case group follows the runner's rotating transport order,
+including its size-dependent offset. Seven repeats do not exactly balance four
+positions, and both boots use the same within-size order. The 0,1,2,2,1,0 boot
+sequence counterbalances simple time drift; it is neither randomization nor
+fourteen independent deployments. The page explicitly presents descriptive
+spread and does not assert statistical independence. Stable per-boot klet
+results and within-boot transport separation support its bounded conclusions.
+
+Comparison fairness
+
+The guest caller, request sizes, timed/warmup counts, full-transfer loops,
+sequence word, complete reply verification and directional 64 KiB capacities
+are common. Virtio endpoints set 64-bit AF_VSOCK buffer options and read back
+the resulting size on both connecting and accepted sockets. Credits do not
+bound every skb/virtqueue allocation; the page correctly says so. The workload
+is one outstanding echo, with both directions counted in goodput; it is not a
+one-way saturation benchmark. Per-case p50/p95 medians are labeled accurately.
+
+This is actual modern virtio PCI/MSI-X with vhost-vsock in one KVM VM, without
+nesting. Every retained data-queue IRQ has effective guest CPU1 affinity, an
+unchanged CPU0 count and increasing CPU1 count. Config-vector effective CPU0
+does not contradict the narrower data-queue placement claim. No callback or
+workqueue placement is inferred from interrupt delivery.
+
+Recorded vCPU/vhost affinities match physical CPUs 0/1, with housekeeping on 2.
+The runner selects different package/core IDs rather than SMT siblings; current
+sysfs corroborates cores 0/1/2 with sibling lists 0,4; 1,5; 2,6. Native outer
+Linux 6.8 peer versus guest Linux 6.12 pipe/klet peer remains a material topology
+and kernel difference. The page states it prominently and does not disguise
+this as an identical native deployment or a measured copy-count audit of 6.8.
+Neither powersave governor, unmanaged sibling activity, nor unrelated host
+load is silently treated as controlled. These prevent generalizing small
+differences, especially the roughly 1% klet/pipe difference at 16 KiB.
+
+CPU scope and boundaries
+
+Endpoint CPU includes caller and peer, with asynchronous vhost work absent
+from virtio's endpoint sum. QEMU task runtime explicitly excludes the identified
+vhost TID before adding its runtime separately. This worker belongs to QEMU's
+task list in the retained metadata. The outer sum includes guest execution and
+the outer peer, so adding endpoint and outer CPU would double count. The page
+correctly forbids that addition and disclaims all-machine CPU accounting.
+
+The unchanged 200000 ns KVM halt-poll maximum is recorded. Pipe/klet outer CPU
+is strongly affected by configured vCPU polling; the page calls this monitored
+configured-system cost and does not infer transport CPU from it. No idle
+subtraction or artificial host-global tuning is concealed.
+
+Outer windows include begin acknowledgement and end token, and task snapshots
+are sequential. For mode 2, median outer-wall excess is about 0.49-0.65% for
+klet and 0.009-0.026% for virtio across sizes; maximum klet excess is 1.48%.
+These are small relative to the large virtio separation, but preclude treating
+very small outer CPU differences as precise marginal transport cost. The raw
+intervals are retained and the page discloses the boundary cost. Virtio uses
+its data stream for control; the other paths use a separate control stream.
+
+Profiling and optimization attribution
+
+Raw 64 KiB tenant profile records agree with every diagnostic table entry.
+Both modes perform 4160 read and 4160 write copies of 272629760 bytes each;
+host copies total 545259520 bytes. The comparison is not based on instrumented
+goodput. Mode 0 issues 33280 data blocking notifications versus 8319 in mode 2;
+mode 2 additionally issues 16640 poll notifications. Wait/retry observations
+fall from 28928/20608 to 8321/1. These count instrumented events, not recipients,
+hardware interrupts, or exact sleeps inside the queue.
+
+Read commit elapsed time changes from 41.319946 to 1.433550 ms, while write
+commit changes from 41.251675 to 44.269658 ms. The page correctly avoids adding
+overlapping intervals or attributing whole elapsed spans to wakeup CPU work.
+Similar copy and lookup intervals, fewer unsuccessful retries, source mechanism
+and uninstrumented ablation jointly support the notification optimization.
+They do not isolate each scheduling cost. Mode 2 versus 1 is explicitly the
+split-queue/demand-gating package. The direct API comparison changes both tenant
+entry and memory access and retains the common host caller; its small advantage
+does not isolate syscall cost. The page handles all of these limits correctly.
+
+The retained plan and three pre-implementation reports explicitly review the
+unoptimized broker fingerprint, give conditional permission to implement, and
+require later correctness and matched benefit before selecting a default.
+The implementation review identifies the later broker fingerprint and checks
+the conditions. This is a credible recorded review workflow; the final evidence
+does not treat design approval itself as a performance or correctness proof.
+The deliberate manual module default 0 versus experimental Make default 2 is
+explicit and poses no inconsistency.
+
+Whole-page coherence and follow-up
+
+No mandatory textual correction is required by this review. The distinction
+between shared storage and application zero-copy remains consistent. Real
+virtio comparison, historical ownership transfer, carrier parking and planned
+task-level interrupts each retain their own scope. The conclusion matches the
+measured workload, keeps Under review status, and records missing production
+integration and concurrency tests. The retained test limitations must remain:
+bounded-delay overlap is not deterministic under arbitrary descheduling, and
+killing a host producer's peer does not establish own-reservation image eviction.
+
+Optional reproducibility improvement: retain raw physical topology/sibling
+IDs, compiler versions and hashes of initramfs and the guest run-vsock binary.
+The runner's checked selection and current topology support the present core
+claim, but the environment JSON is not a complete archival topology/toolchain
+manifest. No published claim requires byte-identical rebuild reproducibility.
+
+Final regression and make check/make build are outside this read-only review.
+The coordinator must retain their outcomes before reporting those gates as
+completed. This review approves the evidence and prose as inspected, subject
+to those routine completion gates and the independent soundness review.

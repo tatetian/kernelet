@@ -1,0 +1,131 @@
+Round 2 independent adversarial review: experiments, architecture, and writing
+Branch: design/klet-vsock
+Scope: tmp-klet-vsock-prompt.md, AGENTS.md, proposal, experiment driver,
+tenant/kernel, vOSTD payload path, broker, checker and retained evidence.
+The author's reviews.txt conclusions were not used as evidence.
+No QEMU run, build, or implementation changes were performed.
+
+Verdict: NO BLOCKING OBJECTIONS REMAIN within this review's scope.
+The proposal can be Under review, subject to the other independent reviews.
+The negative pipe result and deferred task-level readiness integration are
+appropriately bounded findings, not reasons to require a production stack.
+
+Independent checks
+- Ran python3 prototype/tools/check-vsock.py prototype/.build/serial-vsock.log.
+  PASS: all required functional markers and 27 measurement rows.
+- Recomputed throughput, latency and CPU medians from that retained serial log;
+  all nine rows match results.txt and proposal:283-300 to displayed precision.
+- Checked current SHA-256 fingerprints of vostd/src/vsock.rs,
+  linux/endovisor/vsock.c, kernels/vsock/src/lib.rs,
+  host/runtime/run-vsock.c and tools/check-vsock.py against results.txt: match.
+- Read raw unload evidence: zero endpoints/connections, heap blocks, stacks,
+  and carrier records; clean module unload. The log reports zero kick IPIs,
+  consistent with the explicit limitation on virtual-interrupt evidence.
+- Audited host/runtime/run-vsock.c:490-568 and kernels/vsock/src/lib.rs:144-180.
+  The new API run uses the integrated kernel and host endpoint, kernel-buffer
+  read_bytes/write_bytes, and the same sizes, capacities, placement, warmup,
+  iteration count and repetitions as the end-to-end runs. It removes tenant
+  syscalls and tenant-memory translation; host syscalls and broker waits stay.
+- Read the data-copy chain in vostd/src/vsock.rs:188-242 and
+  linux/endovisor/vsock.c:218-256,344-360,470-499. Ring addresses stay internal
+  to trusted copying code; reserve/commit do not forward payload elsewhere.
+  This supports the stated absence of intermediate transport copies separately
+  from timing and published-byte counters.
+- Inspected the original historical source with git -C
+  /root/Workspace/kernelet-book show
+  e817415a511d9ff61a4d8aaa97582d26a80bca64:src/blueprint/design/channels.md.
+  The retained ownership-transfer excerpt matches it. The comparison describes
+  ownership/grant and mapping changes, and does not reuse old timings as new
+  evidence. Historical provenance is sufficient despite the unavailable remote.
+
+Round 1 findings, independently reassessed
+
+E1 [formerly P2, RESOLVED]
+Locations: proposal:194-204; linux/endovisor/uapi/klet-vsock.h:14;
+linux/endovisor/vsock.c:126-140,303-319.
+There is now a separate enforced 64-live-connection limit, incremented only
+for installed connections and decremented when both endpoints are gone.
+Thus a one-survivor connection still consumes a connection slot. The proposal
+correctly distinguishes the 8 MiB payload bound from allocation rounding
+(up to 16 MiB of combined connection allocations) and extra metadata.
+
+E2 [formerly P2, RESOLVED]
+Locations: proposal:35-61,75.
+The specified copying path now excludes receive coalescing, and the prose
+identifies the optional extra endpoint copy instead of claiming a universal
+one-copy total. Independently checked Linux v6.12's common receive enqueue
+coalescing branch and vhost copying calls:
+https://github.com/torvalds/linux/blob/v6.12/net/vmw_vsock/virtio_transport_common.c#L1260-L1312
+https://github.com/torvalds/linux/blob/v6.12/drivers/vhost/vsock.c#L183-L204
+https://github.com/torvalds/linux/blob/v6.12/drivers/vhost/vsock.c#L309-L364
+The revised diagrams do not infer extra payload copies from virtqueue records.
+
+E3 [formerly P2, RESOLVED]
+Locations: proposal:83-92,170-182; carrier.c:1557-1588; sched.c:268-321.
+The new directional traces cover doorbells, the in-kernel backend, socket
+wakeups, used entries, guest callbacks/work and optional vCPU wakeups.
+Independent source check confirms the RX callback schedules work:
+https://github.com/torvalds/linux/blob/v6.12/net/vmw_vsock/virtio_transport.c#L457-L472
+The text distinguishes optional notifications and hardware exits from userspace
+emulation. The proposed task-level path now follows pending bits, carrier
+references, idle wakeup, user resume processing, remote function-call IPI,
+watch-timer redirection and critical-section deferral. It states that channel
+event dispatch is not yet implemented and carrier waits cannot establish
+cheaper interrupt delivery. The actual local source supports these limits.
+
+E4 [formerly P2, RESOLVED]
+Locations: proposal:275-277,292-306; run-vsock.c:490-568;
+kernels/vsock/src/lib.rs:144-180; results.txt and raw serial log.
+There is now practical integrated direct-vOSTD API evidence at 4/16/64 KiB.
+Its medians are separate from end-to-end results and still trail pipes.
+The text correctly says the difference changes both transitions and memory
+access, and cannot independently isolate syscall or notification cost.
+
+E5 [formerly P3, RESOLVED]
+Locations: run-vsock.c:447-480; kernels/vsock/src/lib.rs:153-173;
+proposal:265; retained serial marker.
+A second control connection gates consumption after the data ring is full.
+The host checks the writer remains blocked, releases the gate, receives the
+17 echoed blocks and joins the successful writer. This demonstrates ordinary
+consumption wakeup without using peer death to release backpressure.
+
+E6 [formerly P3, RESOLVED]
+Locations: proposal:134; broker:287-330,368-388.
+The prose now explains queued-connect completion, backlog waiting, missing
+or dying listener errors, signal restart/EINTR behavior and carrier termination.
+It also documents Linux's file-reference behavior for a concurrent host close.
+The compact diagram omits waiting substates, but nearby prose supplies them;
+this is adequate for the limited prototype and is not a blocking omission.
+
+E7 [formerly P3, RESOLVED]
+Location: proposal:247. The doubled comma is gone.
+
+Remaining nonblocking observation
+
+E8 [P3, measurement-order limitation]
+Locations: run-vsock.c:598-603; proposal:275,302; results.txt methodology.
+API runs always follow the alternating pipe/klet pair. This is disclosed and
+three repetitions support descriptive medians, but the small API/tenant gap
+can still include ordering or drift effects. Before making a causal performance
+claim, interleave or rotate all three transports and increase repetitions.
+No causal or statistical-significance claim is currently made, so this does
+not block the proposal or require another experiment for the requested scope.
+
+Overall assessment
+The proposal addresses the whole socket facility: authorization, listener and
+connected endpoints, pending setup, ordered partial transfer, notification,
+backpressure, shutdown, death, independent shared storage and accounting.
+The retained experiment uses real host and tenant userspace paths and two
+independent sandboxes. Correctness payloads force wraparound; controlled
+blocking and peer-death tests supplement ordinary echo. The new source traces
+make the architectural comparison assessable without treating virtual queues,
+VM exits, worker wakeups and application copies as interchangeable costs.
+
+The performance conclusions are proportional to the experiment: approximately
+74%, 56% and 49% of pipe throughput for tenant end-to-end echo, with higher CPU
+cost; API access narrows but does not explain the entire gap. Bulk transfers
+do not prove small-transfer performance, scalable locking, production Linux
+socket compatibility, or faster interrupt delivery. These remain explicit
+limitations/planned work rather than hidden failures. The writing follows the
+proposal structure and local background-box style and distinguishes planned
+mechanisms from implementation evidence and later acceptance.

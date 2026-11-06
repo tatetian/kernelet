@@ -2,6 +2,7 @@
 # staging area, the logs.
 .build/
 target/
+__pycache__/
 
 # out-of-tree module build artifacts
 *.o
@@ -19,3 +20,4 @@ kernels/probe/probe
 kernels/yield/yield
 kernels/sched/sched
 kernels/mem/mem
+kernels/vsock/tenant

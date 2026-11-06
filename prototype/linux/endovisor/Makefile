@@ -7,7 +7,7 @@
 # relocates. One endovisor.ko serves every kernel proper.
 obj-m += endovisor.o
 
-endovisor-y := main.o image.o sandbox.o carrier.o space.o evict.o watch.o sched.o switch.o
+endovisor-y := main.o image.o sandbox.o carrier.o space.o evict.o watch.o sched.o vsock.o switch.o
 
 # objtool does not understand a function that returns on a different stack
 # than it was called on.

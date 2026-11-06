@@ -1,0 +1,276 @@
+Pre-implementation independent review: optimization evidence and experiment design
+Date: 2026-11-06
+Scope: AGENTS.md, optimization-plan.txt, profile-before-unpinned.txt,
+linux/endovisor/vsock.c, vostd/src/vsock.rs, kernels/vsock/src/lib.rs,
+host/runtime/{run-vsock.c,vsock-peer.c,vsock-bench.h},
+tools/run-vsock-comparison.py, and .build/vsock-comparison-before2.
+This review preceded implementation of the proposed notification changes.
+No source changes, builds, QEMU runs, or performance experiments were performed.
+Only this review report was written. Retained logs were parsed independently.
+
+Verdict: CONDITIONAL APPROVAL to implement and test the bounded notification
+experiment. The evidence supports investigating notifications before changing
+handle representation, but does not establish their isolated CPU cost, a
+speedup, or a superior default. Performance claims and default selection remain
+conditional on the controls and validation below. This is an evidence/design
+review, not a replacement for the independent lifetime/concurrency review.
+
+1. What the existing profile establishes
+
+The 64 KiB klet case has 4160 operations in each direction, including warmup,
+and 272629760 bytes copied in each direction. Read/write commit intervals are
+40017941/40317521 ns, approximately 9.62/9.69 us per operation. These intervals
+span the service call; they include scheduling and other elapsed delay. The
+instrumented metadata step itself is much shorter and excludes the subsequent
+wake call. This makes notification/scheduling a plausible target, not a measured
+attribution of the whole commit interval to wake_up_all.
+
+The broker reports 28898 wait attempts, 28895 attempts with an observed voluntary
+context-switch change, and 20578 EAGAIN results on retry. These show repeated
+waiting and rechecks in a lock-step exchange. They do not count distinct tasks
+awakened by each notification, nor prove that every retry is avoidable: a waiter
+can legitimately lose a race for readiness or a lease. The context-switch test
+also includes reacquiring kv_lock, so "slept" is not an exact count of sleeps
+inside the wait queue itself. Likewise wakes[op] counts notification invocations,
+not recipients, actual wakeups, or wasted CPU. Preserve these distinctions when
+writing the proposal and interpreting an after-profile.
+
+There are 16646 owner-scoped lookups and 2097404 comparisons, averaging 126
+comparisons per lookup. lookup_ns is 2192274 ns, about 132 ns per lookup, against
+345072208 ns timed case wall time. The separately collected intervals include
+warmup, can overlap across participants, and have instrumentation overhead;
+they are not an additive wall-time decomposition. Nevertheless the current data
+do not justify prioritizing a handle-layout/lifetime change over the more local
+notification experiment. lock_ns is also an elapsed acquisition measurement,
+not mutex CPU consumption or the duration of all critical sections.
+
+The profile is explicitly unpinned, single-run, instrumented and diagnostic.
+Its similar klet/API waiting pattern is useful supporting evidence that removing
+tenant syscalls alone does not remove broker waiting. The API comparison changes
+both transition and memory-access work and is not an independent measurement of
+syscall cost. Neither profile timing nor historical pipe timings may serve as
+the final before side of an optimization speedup claim.
+
+2. Assessment of the proposed mechanism
+
+Suppressing successful RESERVE_TX/RESERVE_RX notification is a sound hypothesis:
+reservation does not publish bytes or reusable capacity and can remove readiness
+by taking a lease. Suppression must not accidentally include COMMIT_TX/COMMIT_RX,
+zero-prefix cancellation, or terminal/control transitions. Both the image
+kv_request path and the direct host kv_io commit path must apply the policy;
+the latter currently calls klet_vsock_wake directly.
+
+Per-ring blocking-waiter counts can safely gate data-commit broadcasts only if
+the readiness test, generation snapshot, registration and count check remain
+under kv_lock. Increment after EAGAIN before unlock, and decrement after locking
+again on every return, before any retry or error exit. A wake between unlock and
+wait registration must still be detected by the generation predicate. Distinguish
+ring-reservation waits from accept/backlog waits, which continue to rely on broad
+control notifications. A cached ring pointer during registration needs the
+documented endpoint/connection lifetime guarantee, including kill and signal
+unwind. Count underflow, stale registrations and the connection-free path need
+explicit review and stress coverage.
+
+Checking both producer and consumer counts on the affected ring is necessary.
+For example, a same-endpoint operation can block behind an outstanding lease
+while the ring is neither empty nor full; a zero-prefix commit can be its only
+progress event. RX waiting for an admitted pre-SHUT_WR producer to resolve also
+requires notification when that lease is canceled. Empty/full transition-only
+notification would not preserve these semantics.
+
+The proposed separate static poll queue is necessary for this gating scheme.
+Poll/epoll subscriptions are not represented by blocking-waiter counts. Every
+data commit must continue notifying that queue even when both ring counts are
+zero, and poll_wait must register before the readiness check. Static lifetime
+avoids introducing connection-owned wait-queue teardown into this experiment.
+Atomic-context kill must retain its broad wake and generation change without
+taking kv_lock. Shutdown, close, accept/backlog release, connect and death must
+retain broad notification to both appropriate classes of waiters.
+
+This remains a global blocking queue and global generation. A commit on one
+active connection can still wake unrelated registered waiters. Approval does
+not imply per-connection dispatch, multi-connection scalability, task-level
+readiness integration, or cheaper virtual-interrupt delivery.
+
+3. Ablation requirements
+
+The proposed 0/1/2 modes are adequate to estimate reservation suppression and
+the additional combined policy, subject to the following conditions:
+
+- Mode 0 must retain baseline notification behavior; mode 1 must differ only
+  by reservation notification suppression; mode 2 adds the poll/blocking split
+  and demand-gated blocking commits. Record the actual module parameter in
+  every run and reject unsupported values. Document any bookkeeping overhead
+  retained in modes 0/1 rather than silently treating that as the old baseline.
+- Mode 2 versus mode 1 measures a package: split queues plus waiter accounting
+  and conditional broadcasts. It does not separately identify the benefit of
+  queue separation versus gating. A fourth always-notify split-queue mode is
+  needed only if such a separate causal claim is made.
+- Retain one matching original-baseline fingerprint or demonstrate mode 0's
+  equivalent behavior before treating the ablation baseline as historical code.
+  Use the same compiled code/configuration wherever practical, with fixed
+  read-only policy selected on module load. Keep image allocation, ring size,
+  test hooks, VM settings and instrumentation state unchanged across modes.
+- Rotate or counterbalance mode order across matched runs/boots, in addition
+  to rotating transport order inside a run. All baseline first and all optimized
+  last leaves thermal/load/drift effects confounded with the policy. Seven
+  repetitions within one VM are descriptive repeated runs, not seven independent
+  machine configurations. Report per-run spread and paired differences.
+- Count reservation notifications suppressed, data commits with/without
+  registered demand, actual blocking-queue notification calls, poll notifications
+  and retry/wait observations in separate diagnostic runs. A renamed wakes
+  counter must not mix commits that invoked notification with commits that did
+  not. Use uninstrumented runs to establish timing/CPU changes.
+
+Do not choose mode 2 as the default merely because it has fewer broadcasts.
+Correctness must hold in every mode, and latency/CPU results must justify the
+extra state. A neutral or worse result is valid evidence and should be retained.
+
+4. Fairness of the real virtio/pipe/klet comparison
+
+The new harness is a substantial improvement over an architectural comparison
+without a real virtio run. It uses one actual KVM guest, an outer-host vhost-vsock
+backend and peer, a common guest caller, 64 KiB directional capacities, identical
+requested 4/16/64 KiB echo payloads, 64 warmups, 8192 timed round trips and seven
+repetitions with all four transports rotated. The caller verifies echoed bytes,
+and complete-transfer loops handle partial I/O. Pipe capacity is checked after
+F_SETPIPE_SZ. VSOCK credit buffer setters use 64-bit values at AF_VSOCK level
+and read the effective size back on the connecting and accepted sockets.
+
+This is a fair bounded comparison of the configured application paths, not a
+same-topology transport microbenchmark. The guest pipe/klet/API peer and outer
+virtio peer necessarily differ in execution domain and Linux version. That
+limitation can be disclosed; demanding an identical host/guest topology would
+defeat the real virtio use case. The two data-core placement is reasonable.
+The API case is a diagnostic path, not a substitute for tenant end-to-end data.
+
+The retained exploratory run has 84 BENCH rows, seven for every size/transport,
+and ends in functional PASS with zero live endpoints/connections. Independently
+computed median case wall times in milliseconds are:
+
+size       pipe       klet        API       virtio
+4096       195.02     258.08      228.16     910.80
+16384      227.01     409.90      333.22    1223.11
+65536      339.10     687.29      670.88    2206.36
+
+These are exploratory observations, not final comparative claims. All recorded
+source SHA-256 values match the reviewed files at review time; the build log
+shows klet_vsock_profile=0. The environment records host Linux 6.8, guest Linux
+6.12, QEMU 10.0.92, peer physical CPU0, caller CPU1, housekeeping CPU2, and the
+vhost worker TID pinned to CPU0. It does not retain guest vsock IRQ placement,
+work execution placement, halt-polling settings or CPU-frequency policy.
+
+Before final before/after series:
+
+- Identify the actual guest virtio-vsock interrupt vectors, retain requested and
+  effective affinity plus before/after interrupt counts, and target the caller
+  CPU as planned where supported. Affinity alone does not prove callback/work
+  execution stays there; retain at least available evidence of guest worker/
+  softirq placement or disclose that residual uncertainty. Keep the policy
+  identical across modes. After tuning, rerun mode 0: before2 cannot be the
+  before side of an after run with a different IRQ policy.
+- Record the CPU topology/SMT relationships and actual participant affinities,
+  effective frequency/governor/turbo state where available, host load and the
+  host halt-polling parameter. Do not change a host-global halt-poll parameter
+  for this experiment. Pinning participants is not exclusive CPU reservation;
+  disclose other host activity and avoid unrelated heavy workloads.
+- Retain exact harness/script, final kernel configuration, compiler versions,
+  module/image/initramfs/kernel artifact fingerprints and module parameters.
+  The current source list omits the orchestration script and artifact hashes;
+  source hashes alone do not establish that the running artifacts contain them.
+- Preserve common payload checks, iteration counts, capacities and loop behavior
+  for every mode. The constant 0x69 payload plus per-round sequence verifies
+  echo but does not represent varied workloads. This is one outstanding
+  request-response stream, not streaming throughput, concurrent-flow capacity,
+  tiny-message latency or production socket compatibility.
+
+5. CPU accounting and measurement boundaries
+
+The current vsock-peer qemu_runtime explicitly excludes vhost TIDs, including
+the retained worker that is a QEMU task. Adding outer_qemu_ns, outer_vhost_ns
+and outer_peer_ns therefore does not double-count that task. Do not add guest
+caller/carrier CPU to this outer sum: their execution is already within the
+vCPU threads. For virtio, peer_cpu_ns equals outer_peer_ns and must not be added
+twice. Endpoint CPU sums and outer monitored-task sums are different metrics.
+
+Endpoint CPU includes the caller and echo peer/carrier, but does not account
+for every asynchronous IRQ/worker activity on the same basis across transports.
+The outer sum is the observed configured VM/QEMU plus identified backend and
+peer task cost, including VM halt polling. It is neither transport-only CPU
+nor all-machine CPU; host asynchronous work outside those tasks can remain
+unattributed. In the exploratory run QEMU alone uses approximately 2.00 CPU
+seconds per wall second for pipe/klet/API and 1.86-1.90 for virtio. This is a
+strong reason to disclose the unadjusted whole-configuration metric and the
+halt-polling setting, not to infer busy transport work from that ratio.
+
+Control messages bracket the outer samples; guest timed work begins after
+the begin acknowledgement and ends before the end token. The outer interval
+therefore deliberately includes boundary/control overhead and slightly skewed
+sequential CPU snapshots. Preserve outer_wall_ns and the differences from
+guest wall_ns and disclose this. The 0.2-2.3 second exploratory windows make
+the small boundary cost plausible, but any small claimed gain should exceed
+measured boundary variation or be confirmed with longer windows. For virtio
+the fd carries both framing tokens and data; only the other transports have
+a separate control connection. The header comment should not claim a separate
+control channel for every transport. This does not invalidate the long timed
+data window, which excludes the handshake itself.
+
+6. Required correctness and performance gates
+
+Run the complete existing lifecycle, permissions, partial-fault, backpressure,
+death, survivor, reservation/shutdown and teardown suite in modes 0, 1 and 2.
+Existing poll probes of reservation state and instance-exit polling do not
+establish socket poll/epoll wake correctness. Add bounded, synchronized tests
+with no blocking socket read/write waiter to cover:
+
+- poll and epoll waiting only for RX publication and full-ring TX capacity;
+  EOF/HUP/peer death/shutdown and listener accept/backlog progress;
+- cancellation of TX and RX leases with zero committed bytes, including an
+  RX waiter awaiting resolution of a write admitted before SHUT_WR;
+- same-endpoint concurrent readers/writers blocked on a held lease while
+  data/free capacity already exists, and their release by commit/cancellation;
+- interruption and killed-carrier unwind with registered waiters, followed by
+  successful communication and clean teardown; counters must return to zero;
+- repeated check/register/unlock/commit interleavings and multiple independent
+  connections, so global-generation wakeups do not conceal missing registration
+  or leave a waiter stuck. Use explicit gates/timeouts rather than just hopes
+  about scheduler timing. Existing test hooks may be extended for this purpose.
+
+After correctness, retain isolated before/after profiles to test the mechanism,
+then fresh uninstrumented matched 0/1/2 comparisons with the fixed final IRQ
+policy. Require complete raw logs, matching fingerprints, no functional failure,
+clean teardown, per-run latency/CPU/throughput spread and an explanation of any
+regression. Treat transport-order rotation as partial counterbalancing rather
+than randomized independence. Report throughput as round-trip bytes divided by
+the timed wall interval and clearly label p50/p95 as per-RTT observations.
+
+With those gates, implementation is justified as a small, reversible experiment.
+At this stage the defensible conclusion is that repeated broker notifications
+are a plausible avoidable cost and that the planned ablation can test it.
+
+Methodology update inspected before notification implementation
+
+While this review was in progress, the author added configure_virtio() and
+environment capture and completed .build/vsock-matched-before. Independently
+inspected that run: 84 BENCH rows, functional PASS, zero live endpoints and
+connections, clean unload, and all captured source fingerprints match the
+updated files at this inspection. Its broker fingerprint is unchanged from
+before2, so this is a fresh unoptimized baseline after the IRQ-policy change.
+The logs report local CID 3344541 matching the QEMU command, peer CID 2,
+buffer_bytes=65536, and IRQ 11 smp_affinity_list read back as CPU1. Metadata
+records halt_poll_ns=200000 and powersave governors on all three selected CPUs.
+These address the missing requested-affinity, halt-poll and governor capture
+in before2. The older exploratory gap statements above refer to before2 only.
+
+Remaining qualification: configure_virtio reads back the requested
+smp_affinity_list, not effective_affinity_list or observed interrupt-count
+deltas, and setting IRQ affinity does not guarantee subsequent workqueue
+execution CPU. The comment claiming to keep callbacks on the caller CPU should
+be narrowed to routing interrupts unless actual callback/work placement is
+verified. The current single virtio device makes matching "virtio" names
+adequate here; more devices would require explicit device/vector identification.
+No MSI/MSI-X delivery mode is proven merely by the "found virtio MSI interrupts"
+check: the retained log identifies IRQ 11 without retaining its full line.
+These are capture/wording qualifications, not a demand for identical topology
+or a reason to reject the notification experiment. The remaining ablation,
+correctness, accounting, fingerprint and reporting requirements still apply.

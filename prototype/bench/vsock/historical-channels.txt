@@ -1,0 +1,14 @@
+Historical source: kernelet-book
+Repository: https://github.com/tatetian/kernelet-book.git
+Revision: e817415a511d9ff61a4d8aaa97582d26a80bca64
+Path: src/blueprint/design/channels.md
+Retrieved from the local repository; the remote raw URL returned HTTP 404.
+This excerpt is preserved so review does not require access to that remote.
+
+## The ownership-transfer extension
+
+Two copies per packet is the price of sharing no memory. Moving *ownership* of the buffer instead is the obvious alternative, and an early experiment measured it: 104, 177 and 94 cycles to create, send and destroy a reference between instances, and a 4-byte round trip of 9.4 µs against 36.9 µs for virtio-vsock through a microVM (*measured on the booted prototype of the mechanism*).
+
+In this design the same idea is a **frame move**: instead of copying a payload, the switch takes a whole grain out of the sender's grant and appends it to the receiver's, rewriting the owner array and both grant tables, after which the receiver's driver finds the packet in memory it now owns. It needs a payload that fills a grain, a check that the sender no longer maps the frame into any of its processes, and a way to tell the receiver that its grant has grown; and it withdraws, for the sender, the assumption that a kernelet's memory only grows. It is left out of the first version and listed for the Limitations chapter, with the copy path as the baseline it has to beat.
+
+The second version halves the copy path instead: zero-copy I/O copies once, frame to frame, in the sender's notify call, and sets the bar a frame move must clear — about 3 to 4 µs to unmap a grain with the translation shootdown it forces (*estimated* from a 4 KiB measurement) against 156 µs to copy one cold (*measured in a model*).

@@ -1,0 +1,6 @@
+make -C book check
+make[1]: Entering directory '/root/Workspace/kernelet/book'
+python3 tools/check.py
+check: 19 pages, 71 links, 142 code references checked, 14 verbatim blocks, 14 figures
+check: OK
+make[1]: Leaving directory '/root/Workspace/kernelet/book'

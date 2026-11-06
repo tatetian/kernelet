@@ -1,0 +1,56 @@
+Klet-vsock notification optimization review record, 2026-11-06
+Branch: design/klet-vsock
+
+Order of work
+1. Profiled the initial implementation, retaining profile-before-unpinned.txt.
+2. Wrote optimization-plan.txt without implementing its notification changes.
+3. Obtained three independent pre-implementation design reviews:
+   optimization-design-soundness.txt
+   optimization-design-linux.txt
+   optimization-design-evidence.txt
+4. Implemented only the conditionally approved notification policy, preserving
+   generation ordering, registered waiter lifetime, both commit paths/classes,
+   zero-prefix cancellation, unconditional poll and broad terminal notification.
+5. Expanded the correctness suite; validation-mode-{0,1,2}.txt all pass.
+6. Obtained independent Linux implementation inspection:
+   optimization-implementation-linux.txt (no source correctness blocker).
+7. Fixed fairness deficiencies in exploratory measurements (legacy IRQ versus
+   MSI-X; requested/effective data IRQ affinity), then collected every final
+   policy afresh in counterbalanced order. comparison-summary.txt replays all
+   504 measurements; separate profile-mode-{0,2} diagnoses the mechanism.
+8. Selected mode 2 for experiment Make targets after correctness and benefit
+   checks. Manual module default remains 0; no memory/protection checks removed.
+9. Final whole-page independent review and regression outcomes follow below.
+
+Limits are retained in the page and evidence README: native deployment topology
+is not identical, CPU scopes overlap, instrumentation records elapsed intervals,
+zero-cancel tests use bounded delays, and concurrency checks are not exhaustive.
+
+Final independent whole-page review
+- final-review-soundness.txt: no blocking objection; requested explicit ABI
+  stack-request output clarification, now implemented and confirmed by reviewer.
+- final-review-evidence.txt: no blocking evidence objection; independently
+  checked all 504 records, arithmetic, paired rankings, ordering, fingerprints,
+  notification-profile counts, CPU scopes, and configuration limitations.
+- final-review-writing.txt: approved after paragraph splits, first-use broker/
+  lease terminology and Linux/PCI background; final local ABI paragraph split
+  and direction-specific shutdown summary applied. No substantive blocker.
+- Reviewers read the entire proposal with distinct specialties and clean task
+  context. Review reports remain candid about production and coverage limits.
+
+Final validation
+- All-mode correctness logs: validation-mode-0.txt, validation-mode-1.txt,
+  validation-mode-2.txt, and correctness phases in all six matched boots.
+- Selected experiment default (mode 2): selected-default.txt and
+  selected-default-serial.txt; checker passes 27 short-run measurements.
+- Full existing regression: final-regression.txt, 12 tests PASS, 281 seconds.
+- Book validation: final-book-check.txt (check OK) and final-book-build.txt
+  (HTML build success). Existing mdbook-mermaid version warning is unchanged.
+- Host drivers compile with -Wall -Wextra -Werror; new Rust files pass rustfmt;
+  Python harness/checkers compile; git diff --check passes.
+- Retained comparison replay: comparison-summary.txt, 504 measurements PASS.
+- Historical initial log still replays using check-initial.py.
+
+Decision: retain mode 2 for experimental Make targets. The broker's manual
+module-load default stays 0 and the comparison modes are explicit/read-only.
+No acceptance into Accepted Design or production readiness is claimed.

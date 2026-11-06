@@ -1,0 +1,15 @@
+make: Entering directory '/root/Workspace/kernelet/prototype'
+  PASS    hello (12 s)
+  PASS    pie (11 s)
+  PASS    probe (26 s)
+  PASS    yield (34 s)
+  PASS    sched-policy (16 s)
+  PASS    sched-coop (59 s)
+  PASS    sched-fpu (13 s)
+  PASS    mem-func (11 s)
+  PASS    mem-r2 (11 s)
+  PASS    mem-conc (13 s)
+  PASS    mem-kill (34 s)
+  PASS    mem-pressure (41 s)
+make test: PASS (12 tests, 281 s)
+make: Leaving directory '/root/Workspace/kernelet/prototype'

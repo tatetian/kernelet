@@ -38,6 +38,7 @@
 #include <asm/tsc.h>
 
 #include "kernelet.h"
+#include "uapi/klet-vsock.h"
 
 extern atomic_t klet_sweeping;
 
@@ -213,6 +214,12 @@ long klet_sandbox_create(struct klet_create __user *uarg)
 	cmdline[cr.cmdline_len] = '\0';
 
 	refcount_set(&inst->refs, 1);
+	inst->vsock_cid = klet_vsock_new_cid();
+	if (!inst->vsock_cid) {
+		err = -ENOSPC;
+		goto fail;
+	}
+	inst->vsock_uid = current_euid();
 	inst->slot = -1;
 	mutex_init(&inst->mutex);
 	spin_lock_init(&inst->lock);
@@ -749,6 +756,25 @@ static long klet_sandbox_ioctl(struct file *file, unsigned int cmd, unsigned lon
 	void __user *uarg = (void __user *)arg;
 
 	switch (cmd) {
+	case KLET_VSOCK_GET_CID:
+		return put_user(inst->vsock_cid, (u64 __user *)uarg);
+	case KLET_VSOCK_PERMIT: {
+		struct file *peer;
+		s32 fd;
+		long ret;
+
+		if (get_user(fd, (s32 __user *)uarg))
+			return -EFAULT;
+		if (fd == -1)
+			return klet_vsock_permit(inst, NULL);
+		peer = fget(fd);
+		if (!peer)
+			return -EBADF;
+		ret = peer->f_op == &klet_sandbox_fops ?
+			klet_vsock_permit(inst, peer->private_data) : -EBADF;
+		fput(peer);
+		return ret;
+	}
 	case KLET_GET_VCPU_EXEC_FD:
 		return klet_get_vcpu_exec_fd(inst, uarg);
 	case KLET_ATTACH_DEVICE:

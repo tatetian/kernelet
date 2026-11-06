@@ -1,0 +1,110 @@
+Final whole-page review: technical writing and architecture coherence
+Reviewer: independent final writing review, 2026-11-06
+Scope: Read the complete 429-line proposal, AGENTS.md, proposal guide/template,
+the evidence README and historical excerpt, and relevant Accepted Design material
+on vOSTD, tasks/carriers, sleeping services, the ABI, and sandbox termination.
+Read-only review of source and documentation; no builds or QEMU runs performed.
+
+Verdict
+The technical narrative is coherent and appropriately qualified. No substantive
+architecture or evidence-presentation blocker was found in this specialty.
+Two focused editorial fixes below remain to meet the requested writing rules.
+Line references identify the proposal as read, before any final edits.
+
+Required editorial fixes
+1. Break up paragraphs whose opening sentence does not summarize their content.
+   - Socket lifecycle, line 134: the first sentence describes the bounded listen
+     queue, but the ten-sentence paragraph also specifies connect completion,
+     errors, listener closure, signals, carrier termination, and descriptor-close
+     cancellation. Split at least into setup/backlog behavior and interruption/
+     cancellation paragraphs. Give each a sentence summarizing that unit, e.g.
+     "Connection setup uses a bounded listener queue and defined failure modes."
+     and "Blocked setup calls follow the caller's existing interruption rules."
+   - Safe vOSTD interfaces, line 152: the first sentence introduces memory readers
+     and writers, while later sentences specify sleeping-context restrictions and
+     binary compatibility. Split copying, sleeping contract, and test-application
+     compatibility into distinct short paragraphs; keep the host adapter nearby.
+   - Shutdown, death, and storage lifetime, line 207: a write-shutdown opening
+     leads into read shutdown, close, and forced death. Use a summary sentence
+     covering graceful shutdown and terminal outcomes, or separate graceful
+     shutdown/close from reset-on-death behavior.
+   - Results and CPU accounting, line 378: split endpoint CPU from outer-task CPU;
+     the endpoint-scope opening does not summarize QEMU/vhost accounting.
+   - Results and CPU accounting, line 382: split sampling-window boundaries from
+     halt polling. The timer-window opening does not summarize the configured
+     idle CPU cost that forms the second half of the paragraph.
+   These are local prose fixes, not reasons to restructure the proposal.
+
+2. Introduce central terms/background before technical first use.
+   - The copy diagram names "the broker" at line 57, before the broker is
+     introduced explicitly. Define it in Summary or "A connection and its
+     storage": the trusted endovisor component that owns connection storage,
+     checks endpoint authority, and manages reservations. This also makes the
+     trust boundary easier to grasp before details of handles and locking.
+   - Move the existing "Linux: socket buffers" background (lines 37-41) before
+     line 35, which already requires socket-buffer storage and scatterlists.
+   - At line 342, briefly explain MSI-X and why separate interrupt vectors allow
+     the data queue's target CPU to be checked. A focused background box at its
+     first use follows AGENTS.md and lets an OS-course reader understand why the
+     modern-device/legacy-interrupt distinction matters to the comparison.
+   - "Lease" first appears at line 183 as an unexplained synonym for reservation.
+     Introduce "reservation (lease)" once in the reserve/copy/publish section, or
+     consistently use "reservation" throughout the explanatory text.
+
+Confirmed strengths and limits
+- Overall organization proceeds from motivation/reference mechanisms to the
+  proposed storage and socket lifecycle, safety/lifetime, alternatives,
+  implementation, methods, results, and remaining work.
+- bind/listen/connect/accept, bounded backlog, runtime authority, CID identity,
+  shutdown, close, cancellation, and death all have a stated place in the model.
+- The copy account distinguishes scatterlist descriptors from payload storage,
+  specifies the Linux reference path, and explicitly preserves application
+  copies, optional coalescing, and the source-versus-dynamic-audit limitation.
+- The historical Chapter 12.1 frame move is a distinct ownership alternative;
+  it is not conflated with sharing broker-owned stream storage or given current
+  performance credit. Provenance is retained.
+- Carrier parking is clearly implemented; task-level readiness and event
+  dispatch are clearly planned. The page does not claim to measure a faster
+  virtual-interrupt delivery path.
+- Reserve suppression and the combined poll-separation/demand-gating change are
+  separated in the ablation. Pre-implementation independent review is stated and
+  linked to retained reports; the mode-2 package is not over-decomposed.
+- The favorable headline retains the 4 KiB virtio win. Pipe goodput is not called
+  a bound, real virtio placement is disclosed, and native deployment differences
+  and uncontrolled load/frequency are adjacent to the methods/results.
+- Endpoint and outer CPU scopes are explicitly overlapping and are never added;
+  asynchronous backend work, halt polling, and timing windows are disclosed.
+- Historical initial results, the contemporary mode-0 baseline, instrumented
+  diagnostics, and the final matched comparison are distinguishable.
+- Final regression still being collected is not a review blocker when outcomes
+  are linked to retained evidence upon completion, as the task explicitly allows.
+
+Optional polish
+- Rename "Safe vOSTD interfaces" to "Application interfaces" (or similar) if
+  retaining the host-adapter paragraph under that heading.
+- Consider "Comparison setup and workloads" instead of "A real virtio-vsock
+  comparison" to cover the four-path methodology more literally.
+- Line 132 can be split after the experimental CID/port definitions so endpoint
+  addressing and host authorization each receive their own focused paragraph.
+- Add a one-sentence, Linux-labeled background explanation of poll/epoll before
+  the notification section if those APIs are not assumed elsewhere in the book;
+  explain readiness subscription rather than restating all syscall details.
+
+Final disposition after editorial revision
+Reread the complete revised 459-line proposal. The required fixes above are
+satisfied: the broker is introduced in Summary; skb/scatterlist, poll/epoll, and
+MSI-X background precedes use; reservation/lease terminology is explicit; and
+the identified lifecycle, interface, shutdown/death, and CPU-accounting units
+have focused paragraphs. The optional heading and CID/authorization improvements
+are also present. The new explicit stack-request ABI exception identifies the
+remaining integration work rather than silently contradicting Accepted Design.
+
+No substantive technical-writing or architectural-coherence blocker remains.
+Approval for the final proposal from this specialty, with two local prose notes
+communicated to the author: split the newly expanded line-290 paragraph after
+"arbitrary kernel-proper pointers" to keep ABI behavior separate from acceptance
+integration; consider qualifying line 225's summary as write shutdown so it does
+not imply that read shutdown preserves every admitted operation. These local
+edits do not require another review cycle. The retained final-regression.txt
+also explicitly reports all 12 existing tests passing; no build or test was run
+by this reviewer, and no source or proposal text was changed by this reviewer.

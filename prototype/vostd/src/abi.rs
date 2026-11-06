@@ -28,7 +28,7 @@ use core::{
 use crate::arch::trap::RawUserContext;
 
 /// The ABI version. Bumped whenever any of the tables changes shape.
-pub const KLET_ABI_VERSION: u64 = 6;
+pub const KLET_ABI_VERSION: u64 = 7;
 
 /// What the endovisor tells the kernelet about the machine it was given.
 #[repr(C)]
@@ -211,6 +211,8 @@ pub struct Services {
     /// Writes one console line, what the kernel proper prints. No trailing
     /// newline. [`Services::log_write`] is the kernel log, vOSTD's own lines.
     pub console_write: unsafe extern "C" fn(ptr: *const u8, len: u64),
+    /// Performs an experimental owner-scoped socket or ring operation.
+    pub vsock: unsafe extern "C" fn(req: *mut crate::vsock::Request) -> i64,
 }
 
 /// The kernelet functions the host may call.
