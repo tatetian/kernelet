@@ -25,3 +25,4 @@
 - [Contributing a design proposal](design-proposals/README.md)
 - [Design proposal template](design-proposals/template.md)
 - [2026-11-08 TypedIO](design-proposals/2026-11-08-typed-io.md)
+- [2026-11-09 FPU state management](design-proposals/2026-11-09-fpu-state-management.md)
