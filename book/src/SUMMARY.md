@@ -27,3 +27,4 @@
 - [2026-10-31 Reduce syscall overhead](design-proposals/2026-10-31-reduce-syscall-overhead.md)
 - [2026-11-08 TypedIO](design-proposals/2026-11-08-typed-io.md)
 - [2026-11-09 FPU state management](design-proposals/2026-11-09-fpu-state-management.md)
+- [2026-11-25 Kernelet VirtIO-MMIO Vsock](design-proposals/2026-11-25-kernelet-virtio-mmio-vsock.md)
