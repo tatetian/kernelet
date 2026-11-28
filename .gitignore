@@ -2,3 +2,4 @@
 /book/.cache/
 /book/tools/__pycache__/
 /book/tmp.md
+.obsidian/
